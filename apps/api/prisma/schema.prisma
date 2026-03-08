@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ORGANIZER
+  ATTENDEE
+}
+
+enum Event_Format {
+  ONLINE
+  OFFLINE
+}
+
+enum Registration_Status {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password      String
+  role          Role           @default(ATTENDEE)
+  phone         String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  events        Event[]        @relation("OrganizerEvents")
+  registrations Registration[]
+}
+
+model Event {
+  id             String         @id @default(uuid())
+  organizerId    String
+  title          String
+  description    String         @db.Text
+  format         Event_Format   @default(OFFLINE)
+  locationOrLink String
+  dateTime       DateTime
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  organizer      User           @relation("OrganizerEvents", fields: [organizerId], references: [id])
+  tickets        Ticket[]
+  registrations  Registration[]
+}
+
+model Ticket {
+  id             String         @id @default(uuid())
+  eventId        String
+  name           String         // e.g., VIP, Reguler
+  price          Int            // 0 if free
+  capacity       Int
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  event          Event          @relation(fields: [eventId], references: [id])
+  registrations  Registration[]
+}
+
+model Registration {
+  id             String              @id @default(uuid())
+  eventId        String
+  userId         String
+  ticketId       String
+  status         Registration_Status @default(PENDING)
+  attendeeName   String
+  attendeeEmail  String
+  attendeePhone  String
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  event          Event               @relation(fields: [eventId], references: [id])
+  user           User                @relation(fields: [userId], references: [id])
+  ticket         Ticket              @relation(fields: [ticketId], references: [id])
+}
