@@ -1,0 +1,142 @@
+import dotenv from 'dotenv';
+import { z } from 'zod';
+
+// Load environment variables
+dotenv.config();
+
+// Environment variables validation schema
+const envSchema = z.object({
+  // Application
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
+  PORT: z.string().default('8000').transform(Number),
+  API_VERSION: z.string().default('v1'),
+  APP_NAME: z.string().default('Event Management Platform'),
+
+  // Database
+  DATABASE_URL: z.string().url(),
+
+  // JWT
+  JWT_ACCESS_SECRET: z.string().min(32),
+  JWT_REFRESH_SECRET: z.string().min(32),
+  JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
+  JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
+
+  // Cloudinary
+  CLOUDINARY_CLOUD_NAME: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
+
+  // Email
+  SMTP_HOST: z.string(),
+  SMTP_PORT: z.string().transform(Number),
+  SMTP_USER: z.string(),
+  SMTP_PASS: z.string(),
+  EMAIL_FROM: z.string(),
+
+  // Frontend URL
+  FRONTEND_URL: z.string().url(),
+
+  // Rate Limiting
+  RATE_LIMIT_WINDOW_MS: z.string().default('900000').transform(Number),
+  RATE_LIMIT_MAX_REQUESTS: z.string().default('100').transform(Number),
+
+  // Points & Coupon Configuration
+  REFERRAL_POINTS: z.string().default('10000').transform(Number),
+  REFERRAL_COUPON_DISCOUNT_PERCENTAGE: z
+    .string()
+    .default('10')
+    .transform(Number),
+  POINTS_EXPIRY_MONTHS: z.string().default('3').transform(Number),
+  COUPON_EXPIRY_MONTHS: z.string().default('3').transform(Number),
+
+  // Transaction Configuration
+  PAYMENT_DEADLINE_HOURS: z.string().default('2').transform(Number),
+  ORGANIZER_CONFIRMATION_DAYS: z.string().default('3').transform(Number),
+});
+
+// Validate and parse environment variables
+const parseEnv = () => {
+  const result = envSchema.safeParse(process.env);
+
+  if (!result.success) {
+    const missingVars = result.error.issues
+      .map((issue) => issue.path.join('.'))
+      .join(', ');
+    throw new Error(
+      `❌ Missing or invalid environment variables: ${missingVars}`
+    );
+  }
+
+  return result.data;
+};
+
+const env = parseEnv();
+
+// Export configuration object
+export const config = {
+  // Application
+  nodeEnv: env.NODE_ENV,
+  port: env.PORT,
+  apiVersion: env.API_VERSION,
+  appName: env.APP_NAME,
+  isDevelopment: env.NODE_ENV === 'development',
+  isProduction: env.NODE_ENV === 'production',
+  isTest: env.NODE_ENV === 'test',
+
+  // Database
+  databaseUrl: env.DATABASE_URL,
+
+  // JWT
+  jwt: {
+    accessSecret: env.JWT_ACCESS_SECRET,
+    refreshSecret: env.JWT_REFRESH_SECRET,
+    accessExpiresIn: env.JWT_ACCESS_EXPIRES_IN || '15m',
+    refreshExpiresIn: env.JWT_REFRESH_EXPIRES_IN || '7d',
+  },
+
+  // Cloudinary
+  cloudinary: {
+    cloudName: env.CLOUDINARY_CLOUD_NAME,
+    apiKey: env.CLOUDINARY_API_KEY,
+    apiSecret: env.CLOUDINARY_API_SECRET,
+  },
+
+  // Email
+  email: {
+    host: env.SMTP_HOST,
+    port: env.SMTP_PORT,
+    user: env.SMTP_USER,
+    pass: env.SMTP_PASS,
+    from: env.EMAIL_FROM,
+  },
+
+  // Frontend URL
+  frontendUrl: env.FRONTEND_URL,
+
+  // Rate Limiting
+  rateLimit: {
+    windowMs: env.RATE_LIMIT_WINDOW_MS,
+    maxRequests: env.RATE_LIMIT_MAX_REQUESTS,
+  },
+
+  // Business Logic
+  referral: {
+    points: env.REFERRAL_POINTS,
+    couponDiscountPercentage: env.REFERRAL_COUPON_DISCOUNT_PERCENTAGE,
+  },
+
+  expiry: {
+    pointsMonths: env.POINTS_EXPIRY_MONTHS,
+    couponMonths: env.COUPON_EXPIRY_MONTHS,
+  },
+
+  transaction: {
+    paymentDeadlineHours: env.PAYMENT_DEADLINE_HOURS,
+    confirmationDays: env.ORGANIZER_CONFIRMATION_DAYS,
+  },
+} as const;
+
+export type Config = typeof config;
+export default config;

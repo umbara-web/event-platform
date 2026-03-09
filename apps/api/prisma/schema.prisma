@@ -8,78 +8,386 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// ============================================
+// ENUMS
+// ============================================
+
 enum Role {
+  CUSTOMER
   ORGANIZER
-  ATTENDEE
 }
 
-enum Event_Format {
-  ONLINE
-  OFFLINE
-}
-
-enum Registration_Status {
-  PENDING
-  PAID
+enum TransactionStatus {
+  WAITING_PAYMENT
+  WAITING_CONFIRMATION
+  COMPLETED
+  REJECTED
+  EXPIRED
   CANCELLED
 }
 
-model User {
-  id            String         @id @default(uuid())
-  name          String
-  email         String         @unique
-  password      String
-  role          Role           @default(ATTENDEE)
-  phone         String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+}
 
-  events        Event[]        @relation("OrganizerEvents")
-  registrations Registration[]
+enum TicketType {
+  FREE
+  PAID
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  password        String
+  firstName       String    @map("first_name")
+  lastName        String    @map("last_name")
+  profileImage    String?   @map("profile_image")
+  role            Role      @default(CUSTOMER)
+  referralCode    String    @unique @map("referral_code")
+  referredById    String?   @map("referred_by_id")
+  isVerified      Boolean   @default(false) @map("is_verified")
+  resetToken      String?   @map("reset_token")
+  resetTokenExp   DateTime? @map("reset_token_exp")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  referredBy      User?          @relation("UserReferrals", fields: [referredById], references: [id])
+  referrals       User[]         @relation("UserReferrals")
+  organizedEvents Event[]        @relation("OrganizerEvents")
+  transactions    Transaction[]
+  reviews         Review[]
+  points          Point[]
+  coupons         UserCoupon[]
+  refreshTokens   RefreshToken[]
+
+  @@index([email])
+  @@index([referralCode])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String   @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("refresh_tokens")
+}
+
+model Point {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  amount    Int
+  expiresAt DateTime @map("expires_at")
+  isUsed    Boolean  @default(false) @map("is_used")
+  usedAt    DateTime? @map("used_at")
+  source    String   // REFERRAL, REFUND
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  usedInTrx     TransactionPoint[]
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("points")
+}
+
+model Coupon {
+  id               String       @id @default(uuid())
+  code             String       @unique
+  discountType     DiscountType @map("discount_type")
+  discountValue    Int          @map("discount_value")
+  minPurchase      Int          @default(0) @map("min_purchase")
+  maxDiscount      Int?         @map("max_discount")
+  usageLimit       Int?         @map("usage_limit")
+  usedCount        Int          @default(0) @map("used_count")
+  startDate        DateTime     @map("start_date")
+  endDate          DateTime     @map("end_date")
+  isActive         Boolean      @default(true) @map("is_active")
+  isSystemGenerated Boolean     @default(false) @map("is_system_generated")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  userCoupons UserCoupon[]
+
+  @@index([code])
+  @@index([endDate])
+  @@map("coupons")
+}
+
+model UserCoupon {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  couponId  String    @map("coupon_id")
+  isUsed    Boolean   @default(false) @map("is_used")
+  usedAt    DateTime? @map("used_at")
+  expiresAt DateTime  @map("expires_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  usedInTrx TransactionCoupon[]
+
+  @@unique([userId, couponId])
+  @@index([userId])
+  @@index([couponId])
+  @@map("user_coupons")
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  imageUrl    String?  @map("image_url")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  events Event[]
+
+  @@map("categories")
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  name      String   // City name
+  slug      String   @unique
+  province  String?
+  country   String   @default("Indonesia")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  events Event[]
+
+  @@map("locations")
 }
 
 model Event {
-  id             String         @id @default(uuid())
-  organizerId    String
-  title          String
-  description    String         @db.Text
-  format         Event_Format   @default(OFFLINE)
-  locationOrLink String
-  dateTime       DateTime
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id            String      @id @default(uuid())
+  organizerId   String      @map("organizer_id")
+  categoryId    String      @map("category_id")
+  locationId    String      @map("location_id")
+  name          String
+  slug          String      @unique
+  description   String
+  venue         String
+  address       String
+  imageUrl      String?     @map("image_url")
+  startDate     DateTime    @map("start_date")
+  endDate       DateTime    @map("end_date")
+  status        EventStatus @default(DRAFT)
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
 
-  organizer      User           @relation("OrganizerEvents", fields: [organizerId], references: [id])
-  tickets        Ticket[]
-  registrations  Registration[]
+  // Relations
+  organizer     User            @relation("OrganizerEvents", fields: [organizerId], references: [id], onDelete: Cascade)
+  category      Category        @relation(fields: [categoryId], references: [id])
+  location      Location        @relation(fields: [locationId], references: [id])
+  ticketTypes   TicketTier[]
+  vouchers      Voucher[]
+  transactions  Transaction[]
+  reviews       Review[]
+
+  @@index([organizerId])
+  @@index([categoryId])
+  @@index([locationId])
+  @@index([startDate])
+  @@index([status])
+  @@index([slug])
+  @@map("events")
 }
 
-model Ticket {
-  id             String         @id @default(uuid())
-  eventId        String
-  name           String         // e.g., VIP, Reguler
-  price          Int            // 0 if free
-  capacity       Int
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+model TicketTier {
+  id             String     @id @default(uuid())
+  eventId        String     @map("event_id")
+  name           String     // e.g., "Regular", "VIP", "VVIP"
+  description    String?
+  price          Int        // Price in Rupiah (0 for free)
+  ticketType     TicketType @default(PAID) @map("ticket_type")
+  quota          Int        // Total available seats
+  soldCount      Int        @default(0) @map("sold_count")
+  maxPerUser     Int        @default(5) @map("max_per_user")
+  salesStartDate DateTime   @map("sales_start_date")
+  salesEndDate   DateTime   @map("sales_end_date")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
 
-  event          Event          @relation(fields: [eventId], references: [id])
-  registrations  Registration[]
+  // Relations
+  event              Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  transactionItems   TransactionItem[]
+
+  @@index([eventId])
+  @@map("ticket_tiers")
 }
 
-model Registration {
-  id             String              @id @default(uuid())
-  eventId        String
-  userId         String
-  ticketId       String
-  status         Registration_Status @default(PENDING)
-  attendeeName   String
-  attendeeEmail  String
-  attendeePhone  String
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
+model Voucher {
+  id            String       @id @default(uuid())
+  eventId       String       @map("event_id")
+  code          String       @unique
+  discountType  DiscountType @map("discount_type")
+  discountValue Int          @map("discount_value")
+  minPurchase   Int          @default(0) @map("min_purchase")
+  maxDiscount   Int?         @map("max_discount")
+  usageLimit    Int          @map("usage_limit")
+  usedCount     Int          @default(0) @map("used_count")
+  startDate     DateTime     @map("start_date")
+  endDate       DateTime     @map("end_date")
+  isActive      Boolean      @default(true) @map("is_active")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
 
-  event          Event               @relation(fields: [eventId], references: [id])
-  user           User                @relation(fields: [userId], references: [id])
-  ticket         Ticket              @relation(fields: [ticketId], references: [id])
+  // Relations
+  event              Event                @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  usedInTransactions TransactionVoucher[]
+
+  @@index([eventId])
+  @@index([code])
+  @@map("vouchers")
+}
+
+model Transaction {
+  id                String            @id @default(uuid())
+  invoiceNumber     String            @unique @map("invoice_number")
+  userId            String            @map("user_id")
+  eventId           String            @map("event_id")
+  status            TransactionStatus @default(WAITING_PAYMENT)
+  totalAmount       Int               @map("total_amount") // Original total
+  discountAmount    Int               @default(0) @map("discount_amount")
+  pointsUsed        Int               @default(0) @map("points_used")
+  finalAmount       Int               @map("final_amount") // After discounts
+  paymentProof      String?           @map("payment_proof")
+  paymentDeadline   DateTime          @map("payment_deadline")
+  confirmDeadline   DateTime?         @map("confirm_deadline")
+  paidAt            DateTime?         @map("paid_at")
+  confirmedAt       DateTime?         @map("confirmed_at")
+  rejectedAt        DateTime?         @map("rejected_at")
+  rejectionReason   String?           @map("rejection_reason")
+  cancelledAt       DateTime?         @map("cancelled_at")
+  expiredAt         DateTime?         @map("expired_at")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+
+  // Relations
+  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event            Event                 @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  items            TransactionItem[]
+  usedVoucher      TransactionVoucher?
+  usedCoupon       TransactionCoupon?
+  usedPoints       TransactionPoint[]
+
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@index([invoiceNumber])
+  @@index([paymentDeadline])
+  @@index([confirmDeadline])
+  @@map("transactions")
+}
+
+model TransactionItem {
+  id            String   @id @default(uuid())
+  transactionId String   @map("transaction_id")
+  ticketTierId  String   @map("ticket_tier_id")
+  quantity      Int
+  unitPrice     Int      @map("unit_price")
+  subtotal      Int
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Relations
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  ticketTier  TicketTier  @relation(fields: [ticketTierId], references: [id])
+
+  @@index([transactionId])
+  @@index([ticketTierId])
+  @@map("transaction_items")
+}
+
+model TransactionVoucher {
+  id            String   @id @default(uuid())
+  transactionId String   @unique @map("transaction_id")
+  voucherId     String   @map("voucher_id")
+  discountAmount Int     @map("discount_amount")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Relations
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  voucher     Voucher     @relation(fields: [voucherId], references: [id])
+
+  @@index([voucherId])
+  @@map("transaction_vouchers")
+}
+
+model TransactionCoupon {
+  id             String   @id @default(uuid())
+  transactionId  String   @unique @map("transaction_id")
+  userCouponId   String   @map("user_coupon_id")
+  discountAmount Int      @map("discount_amount")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  // Relations
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  userCoupon  UserCoupon  @relation(fields: [userCouponId], references: [id])
+
+  @@index([userCouponId])
+  @@map("transaction_coupons")
+}
+
+model TransactionPoint {
+  id            String   @id @default(uuid())
+  transactionId String   @map("transaction_id")
+  pointId       String   @map("point_id")
+  amount        Int
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Relations
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  point       Point       @relation(fields: [pointId], references: [id])
+
+  @@index([transactionId])
+  @@index([pointId])
+  @@map("transaction_points")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  eventId   String   @map("event_id")
+  rating    Int      // 1-5
+  comment   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@map("reviews")
 }
