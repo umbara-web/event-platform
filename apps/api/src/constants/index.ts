@@ -34,6 +34,11 @@ export const PAGINATION = {
 
 // File upload limits
 export const UPLOAD = {
+  ALLOWED_IMAGE_TYPES: [
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/gif',
+  ] as string[],
   MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB
-  ALLOWED_IMAGE_TYPES: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
 } as const;
