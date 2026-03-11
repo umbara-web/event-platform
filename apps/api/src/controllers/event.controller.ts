@@ -1,58 +1,167 @@
-import { Request, Response, NextFunction } from 'express';
-import * as eventService from '../services/event.service';
+import { Request, Response } from 'express';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { ApiResponse } from '../utils/ApiResponse.js';
+import { MESSAGES } from '../constants/index.js';
+import eventService from '../services/event/index.js';
+import type { EventFilters } from '../types/event.types.js';
 
-export const createEventController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const user = req.user;
-    if (!user) {
-      return res.status(401).json({ message: 'Unauthorized' });
+export const createEvent = asyncHandler(async (req: Request, res: Response) => {
+  const event = await eventService.createEvent(
+    req.user!.id,
+    req.body,
+    req.file
+  );
+
+  ApiResponse.created(res, MESSAGES.EVENT.CREATED, event);
+});
+
+export const updateEvent = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.params.id) {
+    throw new Error('Event ID is required');
+  }
+
+  const event = await eventService.updateEvent(
+    req.params.id,
+    req.user!.id,
+    req.body,
+    req.file
+  );
+
+  ApiResponse.success(res, MESSAGES.EVENT.UPDATED, event);
+});
+
+export const deleteEvent = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.params.id) {
+    throw new Error('Event ID is required');
+  }
+
+  await eventService.deleteEvent(req.params.id, req.user!.id);
+
+  ApiResponse.success(res, MESSAGES.EVENT.DELETED);
+});
+
+export const getEvent = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.params.idOrSlug) {
+    throw new Error('Event ID or slug is required');
+  }
+
+  const event = await eventService.getEventByIdOrSlug(req.params.idOrSlug);
+
+  ApiResponse.success(res, MESSAGES.EVENT.FETCHED, event);
+});
+
+export const getEvents = asyncHandler(async (req: Request, res: Response) => {
+  const filters: EventFilters = {
+    categoryId: req.query.categoryId as string,
+    locationId: req.query.locationId as string,
+    search: req.query.search as string,
+    startDate: req.query.startDate
+      ? new Date(req.query.startDate as string)
+      : undefined,
+    endDate: req.query.endDate
+      ? new Date(req.query.endDate as string)
+      : undefined,
+    minPrice: req.query.minPrice
+      ? parseInt(req.query.minPrice as string)
+      : undefined,
+    maxPrice: req.query.maxPrice
+      ? parseInt(req.query.maxPrice as string)
+      : undefined,
+    status: req.query.status as any,
+    isFree:
+      req.query.isFree === 'true'
+        ? true
+        : req.query.isFree === 'false'
+          ? false
+          : undefined,
+  };
+
+  const pagination = {
+    page: parseInt(req.query.page as string) || 1,
+    limit: parseInt(req.query.limit as string) || 10,
+    sortBy: req.query.sortBy as string,
+    sortOrder: req.query.sortOrder as 'asc' | 'desc',
+  };
+
+  const result = await eventService.getEvents(filters, pagination);
+
+  ApiResponse.paginated(
+    res,
+    MESSAGES.EVENT.LIST_FETCHED,
+    result.data,
+    result.pagination
+  );
+});
+
+export const getUpcomingEvents = asyncHandler(
+  async (req: Request, res: Response) => {
+    const limit = parseInt(req.query.limit as string) || 10;
+    const events = await eventService.getUpcomingEvents(limit);
+
+    ApiResponse.success(res, MESSAGES.EVENT.LIST_FETCHED, events);
+  }
+);
+
+export const publishEvent = asyncHandler(
+  async (req: Request, res: Response) => {
+    if (!req.params.id) {
+      throw new Error('Event ID is required');
     }
 
-    const result = await eventService.createEventService(user.id, req.body);
+    const event = await eventService.publishEvent(req.params.id, req.user!.id);
 
-    res.status(201).json({
-      message: 'Event created successfully',
-      data: result,
-    });
-  } catch (err) {
-    next(err);
+    ApiResponse.success(res, MESSAGES.EVENT.UPDATED, event);
   }
-};
+);
 
-export const getEventsController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const result = await eventService.getEventsService();
+export const getCategories = asyncHandler(
+  async (req: Request, res: Response) => {
+    const categories = await eventService.getCategories();
 
-    res.status(200).json({
-      message: 'Success',
-      data: result,
-    });
-  } catch (err) {
-    next(err);
+    ApiResponse.success(res, 'Kategori berhasil diambil', categories);
   }
-};
+);
 
-export const getEventByIdController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const result = await eventService.getEventByIdService(req.params.id);
+export const getLocations = asyncHandler(
+  async (req: Request, res: Response) => {
+    const locations = await eventService.getLocations();
 
-    res.status(200).json({
-      message: 'Success',
-      data: result,
-    });
-  } catch (err) {
-    next(err);
+    ApiResponse.success(res, 'Lokasi berhasil diambil', locations);
   }
+);
+
+export const getOrganizerEvents = asyncHandler(
+  async (req: Request, res: Response) => {
+    const pagination = {
+      page: parseInt(req.query.page as string) || 1,
+      limit: parseInt(req.query.limit as string) || 10,
+      sortBy: req.query.sortBy as string,
+      sortOrder: req.query.sortOrder as 'asc' | 'desc',
+    };
+
+    const result = await eventService.getOrganizerEvents(
+      req.user!.id,
+      pagination
+    );
+
+    ApiResponse.paginated(
+      res,
+      MESSAGES.EVENT.LIST_FETCHED,
+      result.data,
+      result.pagination
+    );
+  }
+);
+
+export default {
+  createEvent,
+  updateEvent,
+  deleteEvent,
+  getEvent,
+  getEvents,
+  getUpcomingEvents,
+  publishEvent,
+  getCategories,
+  getLocations,
+  getOrganizerEvents,
 };
