@@ -1,22 +1,30 @@
 import { Router } from 'express';
-
-import authRouter from '../routers/auth.routers';
-import eventRouter from '../routers/event.routers';
-import ticketRouter from '../routers/ticket.routers';
-import registrationRouter from '../routers/registration.routers';
-import { getUserRegistrationsController } from '../controllers/registration.controller';
-import { authMiddleware } from '../middlewares/auth.middleware';
+import authRoutes from './auth.routes.js';
+import userRoutes from './user.routes.js';
+import eventRoutes from './event.routes.js';
+import transactionRoutes from './transaction.routes.js';
+import reviewRoutes from './review.routes.js';
+import voucherRoutes from './voucher.routes.js';
+import dashboardRoutes from './dashboard.routes.js';
 
 const router = Router();
 
-router.use('/auth', authRouter);
-router.use('/events', eventRouter);
+// API Health check
+router.get('/health', (_req, res) => {
+  res.json({
+    success: true,
+    message: 'API is running',
+    timestamp: new Date().toISOString(),
+  });
+});
 
-// Dedicated endpoint: GET /api/registrations/me
-router.get('/registrations/me', authMiddleware, getUserRegistrationsController);
-
-// Nested routes for tickets and registration handled by event router
-eventRouter.use('/:eventId/tickets', ticketRouter);
-eventRouter.use('/:eventId/register', registrationRouter);
+// Routes
+router.use('/auth', authRoutes);
+router.use('/users', userRoutes);
+router.use('/events', eventRoutes);
+router.use('/transactions', transactionRoutes);
+router.use('/reviews', reviewRoutes);
+router.use('/vouchers', voucherRoutes);
+router.use('/dashboard', dashboardRoutes);
 
 export default router;

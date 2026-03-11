@@ -1,61 +1,91 @@
-import { Request, Response, NextFunction } from 'express';
-import * as authService from '../services/auth.service';
+import { Request, Response } from 'express';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { ApiResponse } from '../utils/ApiResponse.js';
+import { MESSAGES, HTTP_STATUS } from '../constants/index.js';
+import authService from '../services/auth.service.js';
 
-export const registerController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { name, email, password, phone, role } = req.body;
+export const register = asyncHandler(async (req: Request, res: Response) => {
+  const { user, tokens } = await authService.register(req.body);
 
-    // In a real app we'd validate with Zod here
-    if (!name || !email || !password || !phone) {
-      return res.status(400).json({ message: 'Semua field harus diisi' });
-    }
+  ApiResponse.created(res, MESSAGES.AUTH.REGISTER_SUCCESS, {
+    user,
+    tokens,
+  });
+});
 
-    const result = await authService.registerService({
-      name,
-      email,
-      password,
-      phone,
-      role: role || 'ATTENDEE', // Default role
-    });
+export const login = asyncHandler(async (req: Request, res: Response) => {
+  const { user, tokens } = await authService.login(req.body);
 
-    res.status(201).json({
-      message: 'Registrasi berhasil',
-      data: {
-        id: result.id,
-        email: result.email,
-        name: result.name,
-      },
-    });
-  } catch (err) {
-    next(err);
+  ApiResponse.success(res, MESSAGES.AUTH.LOGIN_SUCCESS, {
+    user,
+    tokens,
+  });
+});
+
+export const refreshToken = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { refreshToken } = req.body;
+    const tokens = await authService.refreshToken(refreshToken);
+
+    ApiResponse.success(res, MESSAGES.AUTH.TOKEN_REFRESHED, { tokens });
   }
-};
+);
 
-export const loginController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { email, password } = req.body;
+export const logout = asyncHandler(async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+  await authService.logout(refreshToken);
 
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: 'Email dan password harus diisi' });
-    }
+  ApiResponse.success(res, MESSAGES.AUTH.LOGOUT_SUCCESS);
+});
 
-    const result = await authService.loginService({ email, password } as any);
+export const logoutAll = asyncHandler(async (req: Request, res: Response) => {
+  await authService.logoutAll(req.user!.id);
 
-    res.status(200).json({
-      message: 'Login berhasil',
-      data: result,
-    });
-  } catch (err) {
-    next(err);
+  ApiResponse.success(res, MESSAGES.AUTH.LOGOUT_SUCCESS);
+});
+
+export const forgotPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    await authService.forgotPassword(req.body.email);
+
+    ApiResponse.success(res, MESSAGES.AUTH.PASSWORD_RESET_SENT);
   }
+);
+
+export const resetPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    await authService.resetPassword(req.body.token, req.body.newPassword);
+
+    ApiResponse.success(res, MESSAGES.AUTH.PASSWORD_RESET_SUCCESS);
+  }
+);
+
+export const changePassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    await authService.changePassword(
+      req.user!.id,
+      req.body.currentPassword,
+      req.body.newPassword
+    );
+
+    ApiResponse.success(res, MESSAGES.AUTH.PASSWORD_CHANGED);
+  }
+);
+
+export const getMe = asyncHandler(async (req: Request, res: Response) => {
+  ApiResponse.success(res, MESSAGES.USER.PROFILE_FETCHED, {
+    user: req.user,
+  });
+});
+
+export default {
+  register,
+  login,
+  refreshToken,
+  logout,
+  logoutAll,
+  forgotPassword,
+  resetPassword,
+  changePassword,
+  getMe,
 };

@@ -108,7 +108,7 @@ model Point {
   user          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   usedInTrx     TransactionPoint[]
 
-  @@index([userId])
+  @@index([userId, isUsed])
   @@index([expiresAt])
   @@map("points")
 }
