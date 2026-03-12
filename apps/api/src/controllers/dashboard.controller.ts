@@ -11,88 +11,60 @@ export const getSummary = asyncHandler(async (req: Request, res: Response) => {
   ApiResponse.success(res, 'Dashboard summary berhasil diambil', summary);
 });
 
-export const getStatistics = asyncHandler(
-  async (req: Request, res: Response) => {
-    const year = req.query.year
-      ? parseInt(req.query.year as string)
-      : undefined;
-    const month = req.query.month
-      ? parseInt(req.query.month as string)
-      : undefined;
+export const getStatistics = asyncHandler(async (req: Request, res: Response) => {
+  const year = req.query.year ? parseInt(req.query.year as string) : undefined;
+  const month = req.query.month ? parseInt(req.query.month as string) : undefined;
 
-    const statistics = await dashboardService.getEventStatistics(req.user!.id, {
-      year,
-      month,
-    });
+  const statistics = await dashboardService.getEventStatistics(req.user!.id, {
+    year,
+    month,
+  });
 
-    ApiResponse.success(res, 'Statistik berhasil diambil', statistics);
+  ApiResponse.success(res, 'Statistik berhasil diambil', statistics);
+});
+
+export const getEventParticipants = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.params.eventId) {
+    throw ApiError.badRequest('Event ID is required');
   }
-);
 
-export const getEventParticipants = asyncHandler(
-  async (req: Request, res: Response) => {
-    if (!req.params.eventId) {
-      throw ApiError.badRequest('Event ID is required');
-    }
+  const pagination = {
+    page: parseInt(req.query.page as string) || 1,
+    limit: parseInt(req.query.limit as string) || 10,
+    sortBy: req.query.sortBy as string,
+    sortOrder: req.query.sortOrder as 'asc' | 'desc',
+  };
 
-    const pagination = {
-      page: parseInt(req.query.page as string) || 1,
-      limit: parseInt(req.query.limit as string) || 10,
-      sortBy: req.query.sortBy as string,
-      sortOrder: req.query.sortOrder as 'asc' | 'desc',
-    };
+  const result = await dashboardService.getEventParticipants(
+    req.params.eventId as string,
+    req.user!.id,
+    pagination
+  );
 
-    const result = await dashboardService.getEventParticipants(
-      req.params.eventId,
-      req.user!.id,
-      pagination
-    );
-
-    if (!result) {
-      throw ApiError.notFound(MESSAGES.EVENT.NOT_FOUND);
-    }
-
-    ApiResponse.paginated(
-      res,
-      'Daftar peserta berhasil diambil',
-      result.data,
-      result.pagination
-    );
+  if (!result) {
+    throw ApiError.notFound(MESSAGES.EVENT.NOT_FOUND);
   }
-);
 
-export const getPendingTransactions = asyncHandler(
-  async (req: Request, res: Response) => {
-    const pagination = {
-      page: parseInt(req.query.page as string) || 1,
-      limit: parseInt(req.query.limit as string) || 10,
-    };
+  ApiResponse.paginated(res, 'Daftar peserta berhasil diambil', result.data, result.pagination);
+});
 
-    const result = await dashboardService.getPendingTransactions(
-      req.user!.id,
-      pagination
-    );
+export const getPendingTransactions = asyncHandler(async (req: Request, res: Response) => {
+  const pagination = {
+    page: parseInt(req.query.page as string) || 1,
+    limit: parseInt(req.query.limit as string) || 10,
+  };
 
-    ApiResponse.paginated(
-      res,
-      'Transaksi pending berhasil diambil',
-      result.data,
-      result.pagination
-    );
-  }
-);
+  const result = await dashboardService.getPendingTransactions(req.user!.id, pagination);
 
-export const getRecentActivity = asyncHandler(
-  async (req: Request, res: Response) => {
-    const limit = parseInt(req.query.limit as string) || 10;
-    const activity = await dashboardService.getRecentActivity(
-      req.user!.id,
-      limit
-    );
+  ApiResponse.paginated(res, 'Transaksi pending berhasil diambil', result.data, result.pagination);
+});
 
-    ApiResponse.success(res, 'Aktivitas terbaru berhasil diambil', activity);
-  }
-);
+export const getRecentActivity = asyncHandler(async (req: Request, res: Response) => {
+  const limit = parseInt(req.query.limit as string) || 10;
+  const activity = await dashboardService.getRecentActivity(req.user!.id, limit);
+
+  ApiResponse.success(res, 'Aktivitas terbaru berhasil diambil', activity);
+});
 
 export default {
   getSummary,

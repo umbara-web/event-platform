@@ -18,8 +18,9 @@ jest.mock('../../src/utils/hash', () => ({
 }));
 
 jest.mock('../../src/services/email.service', () => ({
-  emailService: {
-    sendWelcomeEmail: jest.fn().mockResolvedValue(undefined),
+  __esModule: true,
+  default: {
+    sendWelcomeEmail: jest.fn(),
     sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
   },
 }));

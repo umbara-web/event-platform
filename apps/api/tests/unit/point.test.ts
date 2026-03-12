@@ -41,19 +41,35 @@ describe('PointService', () => {
       ]);
 
       (prismaMock.$transaction as jest.Mock).mockImplementation(async (callback: any) => {
+        // Mock $queryRaw yang dipakai oleh point.service.ts untuk FIFO query
+        prismaMock.$queryRaw = jest.fn().mockResolvedValue([
+          {
+            id: 'point-1',
+            userId: 'user-123',
+            amount: 5000,
+            expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            isUsed: false,
+            usedAt: null,
+            source: 'REFERRAL',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            id: 'point-2',
+            userId: 'user-123',
+            amount: 5000,
+            expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+            isUsed: false,
+            usedAt: null,
+            source: 'REFERRAL',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ]) as any;
         prismaMock.point.update.mockResolvedValue({} as any);
+        prismaMock.point.create.mockResolvedValue({} as any);
 
-        const result = await callback(prismaMock);
-
-        return (
-          result ?? {
-            pointsUsed: 8000,
-            pointRecords: [
-              { pointId: 'point-1', pointsUsed: 5000 },
-              { pointId: 'point-2', pointsUsed: 3000 },
-            ],
-          }
-        );
+        return callback(prismaMock);
       });
 
       const result = await pointService.usePoints('user-123', 8000);

@@ -2,12 +2,12 @@
 
 import { PrismaClient } from '@prisma/client';
 import { mockDeep, mockReset } from 'jest-mock-extended';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 import path from 'path';
 import { prismaMock } from './prismaMock';
 
 // Load .env.test SEBELUM mock apapun
-dotenv.config({ path: path.resolve(__dirname, '../.env.test') });
+// dotenv.config({ path: path.resolve(__dirname, '../.env.test') });
 
 // ✅ PENTING: Mock uuid SEBELUM import apapun yang menggunakannya
 jest.mock('uuid', () => {
