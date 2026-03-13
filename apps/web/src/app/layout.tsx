@@ -1,22 +1,26 @@
 import clsx from 'clsx';
-import { Poppins } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
 import './globals.css';
 
-import AuthSessionProvider from '@/src/providers/authSessionProvider';
-import AuthWatcher from '@/src/components/authWatcher';
-import AppLayout from '@/src/components/AppLayout';
+import { QueryProvider } from '@/src/components/providers/QueryProvider';
+import { AuthProvider } from '@/src/components/providers/AuthProvider';
+import { Toaster } from '@/src/components/ui/toaster';
+import { APP_NAME } from '@/src/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'TicketFest - Find & Manage Events',
-  description: 'The easiest way to organize and attend events',
+  title: {
+    default: APP_NAME,
+    template: `%s | ${APP_NAME}`,
+  },
+  description: 'Platform manajemen acara terdepan di Indonesia',
 };
 
-const poppins = Poppins({
+const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800'],
   style: ['normal', 'italic'],
-  variable: '--font-poppins',
+  variable: '--font-inter',
 });
 
 export default function RootLayout({
@@ -26,11 +30,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={clsx(poppins.variable, 'antialiased')}>
-        <AuthSessionProvider>
-          <AuthWatcher />
-          <AppLayout>{children}</AppLayout>
-        </AuthSessionProvider>
+      <body className={clsx(inter.variable, 'antialiased')}>
+        <QueryProvider>
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

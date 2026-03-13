@@ -71,6 +71,7 @@ export interface Event {
     profileImage: string | null;
   };
   ticketTiers: TicketTier[];
+  totalAttendees?: number;
   averageRating?: number;
   totalReviews?: number;
   lowestPrice?: number;
