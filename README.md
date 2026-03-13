@@ -13,7 +13,7 @@ graph TD
 
 **Komponen Utama:**
 
-- **Frontend:** Next.js 14 (App Router), Tailwind CSS, Zustand, React Query.
+- **Frontend:** Next.js 16 (App Router), Tailwind CSS, Zustand, React Query.
 - **Backend:** Node.js, Express, Prisma ORM.
 - **Database:** PostgreSQL (Relational Data).
 - **Storage:** Cloudinary (untuk gambar event & bukti bayar).
@@ -91,25 +91,25 @@ Mekanisme ini berjalan saat registrasi pengguna baru.
 1. **User A** membagikan kode referral (`REF-USERA`).
 2. **User B** mendaftar memasukkan kode `REF-USERA`.
 3. **Sistem:**
-    - Validasi kode referral.
-    - Create User B.
-    - **User A (Referrer)**: Mendapat +10.000 Poin (Masa berlaku 3 bulan).
-    - **User B (Referred)**: Mendapat Kupon Diskon 10% (Masa berlaku 3 bulan).
+   - Validasi kode referral.
+   - Create User B.
+   - **User A (Referrer)**: Mendapat +10.000 Poin (Masa berlaku 3 bulan).
+   - **User B (Referred)**: Mendapat Kupon Diskon 10% (Masa berlaku 3 bulan).
 
 ### B. Penggunaan Poin (FIFO - First In First Out)
 
 Saat user menggunakan poin untuk diskon transaksi, sistem menggunakan logika FIFO untuk memotong saldo poin yang akan kedaluwarsa lebih dulu.
 
-- *Contoh:* User punya 5.000 (Exp: Jan) dan 10.000 (Exp: Feb).
+- _Contoh:_ User punya 5.000 (Exp: Jan) dan 10.000 (Exp: Feb).
 - User pakai 7.000 poin.
-- *Sistem:* Ambil 5.000 dari bucket Jan, dan 2.000 dari bucket Feb.
+- _Sistem:_ Ambil 5.000 dari bucket Jan, dan 2.000 dari bucket Feb.
 
 ### C. Pembatalan & Refund (Refund Logic)
 
 Jika transaksi `CANCELLED`, `REJECTED`, atau `EXPIRED`:
 
 1. **Kursi (Seat):** Dikembalikan ke kuota tiket (`soldCount - qty`).
-2. **Poin:** Jika user pakai poin, poin dibuatkan record baru dengan *expiry date* baru (3 bulan dari tanggal refund).
+2. **Poin:** Jika user pakai poin, poin dibuatkan record baru dengan _expiry date_ baru (3 bulan dari tanggal refund).
 3. **Kupon/Voucher:** Status kupon dikembalikan menjadi aktif (`isUsed = false`) dan kuota voucher dikembalikan.
 
 ---
@@ -151,12 +151,12 @@ sequenceDiagram
 
 Server menjalankan tugas otomatis di latar belakang:
 
-| Frekuensi | Nama Job | Fungsi |
-| --- | --- | --- |
-| **5 Menit** | `expireTransactions` | Mengecek transaksi `WAITING_PAYMENT` yang melewati batas waktu 2 jam. Mengubah status ke `EXPIRED` & Refund resource. |
-| **1 Jam** | `autoCancelTransactions` | Mengecek transaksi `WAITING_CONFIRMATION` yang didiamkan Organizer > 3 hari. Mengubah status ke `CANCELLED`. |
-| **Harian (00:00)** | `expirePoints` | Menandai poin yang masa berlakunya habis sebagai `isUsed=true`. |
-| **Harian (00:00)** | `expireCoupons` | Menandai kupon yang masa berlakunya habis. |
+| Frekuensi          | Nama Job                 | Fungsi                                                                                                                |
+| ------------------ | ------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| **5 Menit**        | `expireTransactions`     | Mengecek transaksi `WAITING_PAYMENT` yang melewati batas waktu 2 jam. Mengubah status ke `EXPIRED` & Refund resource. |
+| **1 Jam**          | `autoCancelTransactions` | Mengecek transaksi `WAITING_CONFIRMATION` yang didiamkan Organizer > 3 hari. Mengubah status ke `CANCELLED`.          |
+| **Harian (00:00)** | `expirePoints`           | Menandai poin yang masa berlakunya habis sebagai `isUsed=true`.                                                       |
+| **Harian (00:00)** | `expireCoupons`          | Menandai kupon yang masa berlakunya habis.                                                                            |
 
 ---
 
