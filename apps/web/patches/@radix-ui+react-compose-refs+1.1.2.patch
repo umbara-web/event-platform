@@ -1,0 +1,102 @@
+diff --git a/node_modules/@radix-ui/react-compose-refs/dist/index.js b/node_modules/@radix-ui/react-compose-refs/dist/index.js
+index 5ba7a95..5f72ef1 100644
+--- a/node_modules/@radix-ui/react-compose-refs/dist/index.js
++++ b/node_modules/@radix-ui/react-compose-refs/dist/index.js
+@@ -18,16 +18,11 @@ var __copyProps = (to, from, except, desc) => {
+   return to;
+ };
+ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+-  // If the importer is in node compatibility mode or this is not an ESM
+-  // file that has been converted to a CommonJS file using a Babel-
+-  // compatible transform (i.e. "__esModule" has not been set), then set
+-  // "default" to the CommonJS "module.exports" for node compatibility.
+   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+   mod
+ ));
+ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+ 
+-// packages/react/compose-refs/src/index.ts
+ var index_exports = {};
+ __export(index_exports, {
+   composeRefs: () => composeRefs,
+@@ -35,7 +30,6 @@ __export(index_exports, {
+ });
+ module.exports = __toCommonJS(index_exports);
+ 
+-// packages/react/compose-refs/src/compose-refs.tsx
+ var React = __toESM(require("react"));
+ function setRef(ref, value) {
+   if (typeof ref === "function") {
+@@ -69,6 +63,27 @@ function composeRefs(...refs) {
+   };
+ }
+ function useComposedRefs(...refs) {
+-  return React.useCallback(composeRefs(...refs), refs);
++  const refsRef = React.useRef(refs);
++  const isSettingRef = React.useRef(false);
++  React.useLayoutEffect(() => {
++    refsRef.current = refs;
++  });
++  return React.useCallback((node) => {
++    if (isSettingRef.current) return;
++    isSettingRef.current = true;
++    try {
++      const cleanups = refsRef.current.map(ref => setRef(ref, node));
++      return () => {
++        cleanups.forEach((cleanup, i) => {
++          if (typeof cleanup === 'function') {
++            cleanup();
++          } else {
++            setRef(refsRef.current[i], null);
++          }
++        });
++      };
++    } finally {
++      isSettingRef.current = false;
++    }
++  }, []);
+ }
+-//# sourceMappingURL=index.js.map
+diff --git a/node_modules/@radix-ui/react-compose-refs/dist/index.mjs b/node_modules/@radix-ui/react-compose-refs/dist/index.mjs
+index 7dd9172..58cf749 100644
+--- a/node_modules/@radix-ui/react-compose-refs/dist/index.mjs
++++ b/node_modules/@radix-ui/react-compose-refs/dist/index.mjs
+@@ -1,4 +1,3 @@
+-// packages/react/compose-refs/src/compose-refs.tsx
+ import * as React from "react";
+ function setRef(ref, value) {
+   if (typeof ref === "function") {
+@@ -32,10 +31,31 @@ function composeRefs(...refs) {
+   };
+ }
+ function useComposedRefs(...refs) {
+-  return React.useCallback(composeRefs(...refs), refs);
++  const refsRef = React.useRef(refs);
++  const isSettingRef = React.useRef(false);
++  React.useLayoutEffect(() => {
++    refsRef.current = refs;
++  });
++  return React.useCallback((node) => {
++    if (isSettingRef.current) return;
++    isSettingRef.current = true;
++    try {
++      const cleanups = refsRef.current.map(ref => setRef(ref, node));
++      return () => {
++        cleanups.forEach((cleanup, i) => {
++          if (typeof cleanup === 'function') {
++            cleanup();
++          } else {
++            setRef(refsRef.current[i], null);
++          }
++        });
++      };
++    } finally {
++      isSettingRef.current = false;
++    }
++  }, []);
+ }
+ export {
+   composeRefs,
+   useComposedRefs
+ };
+-//# sourceMappingURL=index.mjs.map

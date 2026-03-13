@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -15,18 +16,25 @@ export default function EventsPage() {
   const searchParams = useSearchParams();
 
   // Parse URL params
-  const initialFilters: IEventFilters = {
-    page: Number(searchParams.get('page')) || PAGINATION.DEFAULT_PAGE,
-    limit: Number(searchParams.get('limit')) || PAGINATION.DEFAULT_LIMIT,
-    search: searchParams.get('search') || '',
-    categoryId: searchParams.get('categoryId') || undefined,
-    locationId: searchParams.get('locationId') || undefined,
-    sortBy: searchParams.get('sortBy') || 'startDate',
-    sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc',
-    isFree: searchParams.get('isFree') === 'true' ? true : undefined,
-  };
+  const initialFilters = React.useMemo<IEventFilters>(() => {
+    return {
+      page: Number(searchParams.get('page')) || PAGINATION.DEFAULT_PAGE,
+      limit: Number(searchParams.get('limit')) || PAGINATION.DEFAULT_LIMIT,
+      search: searchParams.get('search') || '',
+      categoryId: searchParams.get('categoryId') || undefined,
+      locationId: searchParams.get('locationId') || undefined,
+      sortBy: searchParams.get('sortBy') || 'startDate',
+      sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'asc',
+      isFree: searchParams.get('isFree') === 'true' ? true : undefined,
+    };
+  }, [searchParams]);
 
   const [filters, setFilters] = useState<IEventFilters>(initialFilters);
+
+  // Keep state in sync with URL if searchParams change externally (forward/back button)
+  React.useEffect(() => {
+    setFilters(initialFilters);
+  }, [initialFilters]);
 
   // Update URL when filters change
   const updateUrl = useCallback(
@@ -37,9 +45,13 @@ export default function EventsPage() {
           params.set(key, String(value));
         }
       });
-      router.push(`/events?${params.toString()}`, { scroll: false });
+      const queryString = params.toString();
+      const currentQuery = searchParams.toString();
+      if (queryString !== currentQuery) {
+        router.push(`/events?${queryString}`, { scroll: false });
+      }
     },
-    [router]
+    [router, searchParams]
   );
 
   // Fetch events
@@ -51,24 +63,40 @@ export default function EventsPage() {
   const events = data?.data || [];
   const pagination = data?.pagination;
 
-  const handleFilterChange = (newFilters: Partial<IEventFilters>) => {
-    const updated = { ...filters, ...newFilters, page: 1 };
-    setFilters(updated);
-    updateUrl(updated);
-  };
+  const handleFilterChange = useCallback(
+    (newFilters: Partial<IEventFilters>) => {
+      setFilters((prev) => {
+        const updated = { ...prev, ...newFilters, page: 1 };
+        // Shallow compare to avoid redundant updates
+        if (JSON.stringify(updated) === JSON.stringify(prev)) return prev;
+        updateUrl(updated);
+        return updated;
+      });
+    },
+    [updateUrl]
+  );
 
-  const handleSearchChange = (search: string) => {
-    handleFilterChange({ search });
-  };
+  const handleSearchChange = useCallback(
+    (search: string) => {
+      handleFilterChange({ search });
+    },
+    [handleFilterChange]
+  );
 
-  const handlePageChange = (page: number) => {
-    const updated = { ...filters, page };
-    setFilters(updated);
-    updateUrl(updated);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setFilters((prev) => {
+        if (prev.page === page) return prev;
+        const updated = { ...prev, page };
+        updateUrl(updated);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return updated;
+      });
+    },
+    [updateUrl]
+  );
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     const resetFilters: IEventFilters = {
       page: PAGINATION.DEFAULT_PAGE,
       limit: PAGINATION.DEFAULT_LIMIT,
@@ -77,10 +105,10 @@ export default function EventsPage() {
     };
     setFilters(resetFilters);
     router.push('/events');
-  };
+  }, [router]);
 
   return (
-    <div className='container py-8'>
+    <div className='container mx-auto py-8'>
       {/* Header */}
       <div className='mb-8'>
         <h1 className='text-3xl font-bold'>Jelajahi Event</h1>

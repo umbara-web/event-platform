@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Menu,
   X,
@@ -41,6 +41,7 @@ const navLinks = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, isAuthenticated, logout, isLogoutLoading } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -49,7 +50,7 @@ export function Navbar() {
 
   return (
     <header className='bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur'>
-      <nav className='container flex h-16 items-center justify-between'>
+      <nav className='container mx-auto flex h-16 items-center justify-between'>
         {/* Logo */}
         <Link href={ROUTES.HOME} className='flex items-center space-x-2'>
           <div className='bg-primary flex h-8 w-8 items-center justify-center rounded-lg'>
@@ -79,24 +80,16 @@ export function Navbar() {
         {/* Right Side */}
         <div className='flex items-center space-x-4'>
           {/* Search Button */}
-          <Button
-            variant='ghost'
-            size='icon'
-            asChild
-            className='hidden md:flex'
-          >
-            <Link href={ROUTES.EVENTS}>
+          <Link href={ROUTES.EVENTS} className='hidden md:flex'>
+            <Button variant='ghost' size='icon'>
               <Search className='h-5 w-5' />
-            </Link>
-          </Button>
+            </Button>
+          </Link>
 
           {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant='ghost'
-                  className='relative h-10 w-10 rounded-full'
-                >
+                <button className='hover:bg-accent relative flex h-10 w-10 items-center justify-center rounded-full'>
                   <Avatar className='h-10 w-10'>
                     <AvatarImage
                       src={user.profileImage || ''}
@@ -106,7 +99,7 @@ export function Navbar() {
                       {getInitials(user.firstName, user.lastName)}
                     </AvatarFallback>
                   </Avatar>
-                </Button>
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className='w-56' align='end' forceMount>
                 <DropdownMenuLabel className='font-normal'>
@@ -123,36 +116,34 @@ export function Navbar() {
 
                 {user.role === 'ORGANIZER' && (
                   <>
-                    <DropdownMenuItem asChild>
-                      <Link href={ROUTES.DASHBOARD}>
-                        <LayoutDashboard className='mr-2 h-4 w-4' />
-                        Dashboard
-                      </Link>
+                    <DropdownMenuItem
+                      onClick={() => router.push(ROUTES.DASHBOARD)}
+                    >
+                      <LayoutDashboard className='mr-2 h-4 w-4' />
+                      Dashboard
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </>
                 )}
 
-                <DropdownMenuItem asChild>
-                  <Link href={ROUTES.PROFILE}>
-                    <User className='mr-2 h-4 w-4' />
-                    Profil
-                  </Link>
+                <DropdownMenuItem onClick={() => router.push(ROUTES.PROFILE)}>
+                  <User className='mr-2 h-4 w-4' />
+                  Profil
                 </DropdownMenuItem>
 
                 {user.role === 'CUSTOMER' && (
                   <>
-                    <DropdownMenuItem asChild>
-                      <Link href={ROUTES.MY_TICKETS}>
-                        <Ticket className='mr-2 h-4 w-4' />
-                        Tiket Saya
-                      </Link>
+                    <DropdownMenuItem
+                      onClick={() => router.push(ROUTES.MY_TICKETS)}
+                    >
+                      <Ticket className='mr-2 h-4 w-4' />
+                      Tiket Saya
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href={ROUTES.TRANSACTIONS}>
-                        <Wallet className='mr-2 h-4 w-4' />
-                        Transaksi
-                      </Link>
+                    <DropdownMenuItem
+                      onClick={() => router.push(ROUTES.TRANSACTIONS)}
+                    >
+                      <Wallet className='mr-2 h-4 w-4' />
+                      Transaksi
                     </DropdownMenuItem>
                   </>
                 )}
@@ -170,12 +161,12 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <div className='hidden items-center space-x-2 md:flex'>
-              <Button variant='ghost' asChild>
-                <Link href={ROUTES.LOGIN}>Masuk</Link>
-              </Button>
-              <Button asChild>
-                <Link href={ROUTES.REGISTER}>Daftar</Link>
-              </Button>
+              <Link href={ROUTES.LOGIN}>
+                <Button variant='ghost'>Masuk</Button>
+              </Link>
+              <Link href={ROUTES.REGISTER}>
+                <Button>Daftar</Button>
+              </Link>
             </div>
           )}
 
@@ -217,16 +208,14 @@ export function Navbar() {
 
             {!isAuthenticated && (
               <div className='flex flex-col space-y-2 pt-4'>
-                <Button variant='outline' asChild>
-                  <Link href={ROUTES.LOGIN} onClick={closeMobileMenu}>
+                <Link href={ROUTES.LOGIN} onClick={closeMobileMenu}>
+                  <Button variant='outline' className='w-full'>
                     Masuk
-                  </Link>
-                </Button>
-                <Button asChild>
-                  <Link href={ROUTES.REGISTER} onClick={closeMobileMenu}>
-                    Daftar
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
+                <Link href={ROUTES.REGISTER} onClick={closeMobileMenu}>
+                  <Button className='w-full'>Daftar</Button>
+                </Link>
               </div>
             )}
           </div>

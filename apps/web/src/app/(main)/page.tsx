@@ -40,8 +40,8 @@ export default function HomePage() {
     <div>
       {/* Hero Section */}
       <section className='from-primary/10 via-background to-secondary/10 relative overflow-hidden bg-linear-to-br py-20 lg:py-32'>
-        <div className='container'>
-          <div className='mx-auto max-w-3xl text-center'>
+        <div className='container mx-auto'>
+          <div className='mx-auto text-center'>
             <Badge className='mb-4' variant='secondary'>
               <Sparkles className='mr-1 h-3 w-3' />
               Platform Event #1 di Indonesia
@@ -76,7 +76,7 @@ export default function HomePage() {
 
       {/* Stats Section */}
       <section className='bg-muted/50 border-y py-12'>
-        <div className='container'>
+        <div className='container mx-auto'>
           <div className='grid gap-8 sm:grid-cols-2 lg:grid-cols-4'>
             {[
               { label: 'Event Aktif', value: '1,000+' },
@@ -95,7 +95,7 @@ export default function HomePage() {
 
       {/* Categories Section */}
       <section className='py-16'>
-        <div className='container'>
+        <div className='container mx-auto'>
           <div className='mb-8 flex items-center justify-between'>
             <div>
               <h2 className='text-2xl font-bold'>Jelajahi Kategori</h2>
@@ -133,7 +133,7 @@ export default function HomePage() {
 
       {/* Upcoming Events Section */}
       <section className='bg-muted/30 py-16'>
-        <div className='container'>
+        <div className='container mx-auto'>
           <div className='mb-8 flex items-center justify-between'>
             <div>
               <h2 className='text-2xl font-bold'>Event Mendatang</h2>
@@ -175,7 +175,7 @@ export default function HomePage() {
 
       {/* CTA Section */}
       <section className='py-16'>
-        <div className='container'>
+        <div className='container mx-auto'>
           <div className='from-primary to-primary/80 text-primary-foreground rounded-2xl bg-linear-to-r p-8 text-center lg:p-12'>
             <h2 className='text-2xl font-bold lg:text-3xl'>
               Punya Event yang Ingin Dipromosikan?
