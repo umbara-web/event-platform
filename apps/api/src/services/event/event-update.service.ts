@@ -1,10 +1,10 @@
-import prisma from '../../configs/database.js';
-import { ApiError } from '../../utils/ApiError.js';
-import { MESSAGES } from '../../constants/index.js';
-import cloudinaryService from '../cloudinary.service.js';
-import { validateEventOwnership } from '../event/event-helpers.js';
-import { eventBaseInclude } from '../event/event-types.js';
-import type { UpdateEventInput } from '../../types/event.types.js';
+import prisma from '../../configs/database';
+import { ApiError } from '../../utils/ApiError';
+import { MESSAGES } from '../../constants/index';
+import cloudinaryService from '../cloudinary.service';
+import { validateEventOwnership } from '../event/event-helpers';
+import { eventBaseInclude } from '../event/event-types';
+import type { UpdateEventInput } from '../../types/event.types';
 
 export async function updateEvent(
   eventId: string,

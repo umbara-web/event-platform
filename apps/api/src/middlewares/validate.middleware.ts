@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { z, ZodError, ZodSchema } from 'zod';
-import { ApiError } from '../utils/ApiError.js';
-import { HTTP_STATUS, MESSAGES } from '../constants/index.js';
+import { ApiError } from '../utils/ApiError';
+import { HTTP_STATUS, MESSAGES } from '../constants/index';
 
 export const validate = <T extends z.ZodType<any, any>>(schema: T) => {
   return async (

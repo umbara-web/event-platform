@@ -1,19 +1,19 @@
-import prisma from '../../configs/database.js';
-import { ApiError } from '../../utils/ApiError.js';
-import { MESSAGES } from '../../constants/index.js';
+import prisma from '../../configs/database';
+import { ApiError } from '../../utils/ApiError';
+import { MESSAGES } from '../../constants/index';
 import {
   parsePaginationParams,
   toPrismaQuery,
   createPaginatedResult,
-} from '../../utils/pagination.js';
+} from '../../utils/pagination';
 import {
   getAverageRating,
   getCompletedTransactionsCount,
   buildEventFilters,
-} from '../event/event-helpers.js';
-import { eventDetailInclude, eventListInclude } from '../event/event-types.js';
-import type { EventFilters } from '../../types/event.types.js';
-import type { PaginationParams } from '../../types/index.js';
+} from '../event/event-helpers';
+import { eventDetailInclude, eventListInclude } from '../event/event-types';
+import type { EventFilters } from '../../types/event.types';
+import type { PaginationParams } from '../../types/index';
 
 export async function getEventByIdOrSlug(idOrSlug: string) {
   const event = await findEventByIdOrSlug(idOrSlug);

@@ -1,4 +1,4 @@
-import pointService from '../services/point.service.js';
+import pointService from '../services/point.service';
 
 export const expirePointsJob = async (): Promise<void> => {
   try {

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { uuidSchema, paginationQuerySchema } from './common.validator.js';
+import { uuidSchema, paginationQuerySchema } from './common.validator';
 
 // Create review schema
 export const createReviewSchema = z.object({

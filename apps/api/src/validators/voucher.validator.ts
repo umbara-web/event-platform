@@ -5,7 +5,7 @@ import {
   dateSchema,
   positiveIntSchema,
   nonNegativeIntSchema,
-} from './common.validator.js';
+} from './common.validator';
 
 // Create voucher schema
 export const createVoucherSchema = z.object({

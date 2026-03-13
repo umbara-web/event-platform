@@ -1,7 +1,7 @@
-import prisma from '../../configs/database.js';
-import { ApiError } from '../../utils/ApiError.js';
-import { MESSAGES } from '../../constants/index.js';
-import { eventBaseInclude } from '../event/event-types.js';
+import prisma from '../../configs/database';
+import { ApiError } from '../../utils/ApiError';
+import { MESSAGES } from '../../constants/index';
+import { eventBaseInclude } from '../event/event-types';
 
 export async function publishEvent(eventId: string, organizerId: string) {
   const event = await getEventForPublish(eventId);

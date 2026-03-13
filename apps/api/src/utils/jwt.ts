@@ -1,8 +1,8 @@
 import jwt, { SignOptions, JwtPayload } from 'jsonwebtoken';
-import { config } from '../configs/index.js';
-import { JWTPayload, TokenPair } from '../types/index.js';
-import { ApiError } from './ApiError.js';
-import { MESSAGES } from '../constants/index.js';
+import { config } from '../configs/index';
+import { JWTPayload, TokenPair } from '../types/index';
+import { ApiError } from './ApiError';
+import { MESSAGES } from '../constants/index';
 
 /**
  * Parse duration string to milliseconds

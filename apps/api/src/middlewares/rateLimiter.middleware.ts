@@ -1,6 +1,6 @@
 import rateLimit from 'express-rate-limit';
-import { HTTP_STATUS, MESSAGES } from '../constants/index.js';
-import config from '../configs/index.js';
+import { HTTP_STATUS, MESSAGES } from '../constants/index';
+import config from '../configs/index';
 
 // General API rate limiter
 export const apiLimiter = rateLimit({

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../utils/asyncHandler.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { MESSAGES } from '../constants/index.js';
-import reviewService from '../services/review.service.js';
-import { ApiError } from '../utils/ApiError.js';
+import { asyncHandler } from '../utils/asyncHandler';
+import { ApiResponse } from '../utils/ApiResponse';
+import { MESSAGES } from '../constants/index';
+import reviewService from '../services/review.service';
+import { ApiError } from '../utils/ApiError';
 
 export const createReview = asyncHandler(async (req: Request, res: Response) => {
   const review = await reviewService.createReview(req.user!.id, req.body);

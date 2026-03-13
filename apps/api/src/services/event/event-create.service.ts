@@ -1,10 +1,10 @@
 import { EventStatus } from '@prisma/client';
-import prisma from '../../configs/database.js';
-import { generateSlug } from '../../utils/helpers.js';
-import cloudinaryService from '../cloudinary.service.js';
-import { validateCategory, validateLocation } from '../event/event-helpers.js';
-import { eventBaseInclude } from '../event/event-types.js';
-import type { CreateEventInput } from '../../types/event.types.js';
+import prisma from '../../configs/database';
+import { generateSlug } from '../../utils/helpers';
+import cloudinaryService from '../cloudinary.service';
+import { validateCategory, validateLocation } from '../event/event-helpers';
+import { eventBaseInclude } from '../event/event-types';
+import type { CreateEventInput } from '../../types/event.types';
 
 export async function createEvent(
   organizerId: string,

@@ -1,18 +1,18 @@
 import { Prisma, TransactionStatus } from '@prisma/client';
-import prisma from '../../configs/database.js';
-import { ApiError } from '../../utils/ApiError.js';
-import { MESSAGES } from '../../constants/index.js';
+import prisma from '../../configs/database';
+import { ApiError } from '../../utils/ApiError';
+import { MESSAGES } from '../../constants/index';
 import {
   parsePaginationParams,
   toPrismaQuery,
   createPaginatedResult,
-} from '../../utils/pagination.js';
+} from '../../utils/pagination';
 import {
   transactionDetailInclude,
   transactionListInclude,
-} from './transaction.types.js';
-import type { TransactionFilters } from '../../types/transaction.types.js';
-import type { PaginationParams } from '../../types/index.js';
+} from './transaction.types';
+import type { TransactionFilters } from '../../types/transaction.types';
+import type { PaginationParams } from '../../types/index';
 
 export async function getTransaction(
   transactionId: string,

@@ -1,6 +1,6 @@
 import { UploadApiResponse, UploadApiErrorResponse } from 'cloudinary';
-import cloudinary from '../configs/cloudinary.js';
-import { ApiError } from '../utils/ApiError.js';
+import cloudinary from '../configs/cloudinary';
+import { ApiError } from '../utils/ApiError';
 
 export interface UploadResult {
   url: string;

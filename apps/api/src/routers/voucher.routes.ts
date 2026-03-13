@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import * as voucherController from '../controllers/voucher.controller.js';
-import { validate } from '../middlewares/validate.middleware.js';
-import { authenticate } from '../middlewares/auth.middleware.js';
-import { authorize } from '../middlewares/role.middleware.js';
+import * as voucherController from '../controllers/voucher.controller';
+import { validate } from '../middlewares/validate.middleware';
+import { authenticate } from '../middlewares/auth.middleware';
+import { authorize } from '../middlewares/role.middleware';
 import {
   createVoucherSchema,
   updateVoucherSchema,
   validateVoucherSchema,
-} from '../validators/voucher.validator.js';
-import { idParamsSchema } from '../validators/common.validator.js';
+} from '../validators/voucher.validator';
+import { idParamsSchema } from '../validators/common.validator';
 
 const router = Router();
 

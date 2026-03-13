@@ -1,8 +1,8 @@
-import prisma from '../configs/database.js';
-import { ApiError } from '../utils/ApiError.js';
-import { MESSAGES } from '../constants/index.js';
-import { calculateDiscount, addMonths } from '../utils/helpers.js';
-import config from '../configs/index.js';
+import prisma from '../configs/database';
+import { ApiError } from '../utils/ApiError';
+import { MESSAGES } from '../constants/index';
+import { calculateDiscount, addMonths } from '../utils/helpers';
+import config from '../configs/index';
 
 export interface CouponValidationResult {
   isValid: boolean;

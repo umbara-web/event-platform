@@ -1,6 +1,6 @@
-export * from './auth.types.js';
-export * from './event.types.js';
-export * from './transaction.types.js';
+export * from './auth.types';
+export * from './event.types';
+export * from './transaction.types';
 
 // Pagination types
 export interface PaginationParams {

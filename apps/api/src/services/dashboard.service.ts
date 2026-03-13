@@ -1,10 +1,10 @@
-import prisma from '../configs/database.js';
+import prisma from '../configs/database';
 import {
   parsePaginationParams,
   toPrismaQuery,
   createPaginatedResult,
-} from '../utils/pagination.js';
-import type { PaginationParams } from '../types/index.js';
+} from '../utils/pagination';
+import type { PaginationParams } from '../types/index';
 
 interface StatisticsPeriod {
   year?: number;

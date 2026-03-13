@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { nameSchema } from './common.validator.js';
+import { nameSchema } from './common.validator';
 
 // Update profile schema
 export const updateProfileSchema = z.object({

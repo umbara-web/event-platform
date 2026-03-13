@@ -1,10 +1,10 @@
-import prisma from '../../configs/database.js';
-import { ApiError } from '../../utils/ApiError.js';
-import { MESSAGES } from '../../constants/index.js';
-import pointService from '../point.service.js';
-import couponService from '../coupon.service.js';
-import voucherService from '../voucher.service.js';
-import { validateTransactionOwnership } from './transaction.helpers.js';
+import prisma from '../../configs/database';
+import { ApiError } from '../../utils/ApiError';
+import { MESSAGES } from '../../constants/index';
+import pointService from '../point.service';
+import couponService from '../coupon.service';
+import voucherService from '../voucher.service';
+import { validateTransactionOwnership } from './transaction.helpers';
 import type { TransactionStatus } from '@prisma/client';
 
 export async function cancelTransaction(transactionId: string, userId: string) {

@@ -1,4 +1,4 @@
-import prisma from '../../configs/database.js';
+import prisma from '../../configs/database';
 
 export async function getCategories() {
   return prisma.category.findMany({

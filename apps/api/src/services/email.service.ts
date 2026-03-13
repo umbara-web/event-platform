@@ -1,6 +1,6 @@
-import emailTransporter from '../configs/email.js';
-import config from '../configs/index.js';
-import { formatRupiah } from '../utils/helpers.js';
+import emailTransporter from '../configs/email';
+import config from '../configs/index';
+import { formatRupiah } from '../utils/helpers';
 
 interface TransactionEmailData {
   customerName: string;

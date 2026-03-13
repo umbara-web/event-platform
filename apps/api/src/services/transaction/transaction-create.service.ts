@@ -1,25 +1,25 @@
-import prisma from '../../configs/database.js';
-import { ApiError } from '../../utils/ApiError.js';
-import { MESSAGES } from '../../constants/index.js';
-import config from '../../configs/index.js';
+import prisma from '../../configs/database';
+import { ApiError } from '../../utils/ApiError';
+import { MESSAGES } from '../../constants/index';
+import config from '../../configs/index';
 import {
   generateInvoiceNumber,
   addHours,
   addDays,
-} from '../../utils/helpers.js';
-import pointService from '../point.service.js';
-import couponService from '../coupon.service.js';
-import voucherService from '../voucher.service.js';
+} from '../../utils/helpers';
+import pointService from '../point.service';
+import couponService from '../coupon.service';
+import voucherService from '../voucher.service';
 import {
   validateEventStatus,
   calculateItemsTotal,
   type ItemWithPrice,
-} from './transaction.helpers.js';
+} from './transaction.helpers';
 import {
   eventWithTicketsInclude,
   type TransactionClient,
-} from './transaction.types.js';
-import type { CreateTransactionInput } from '../../types/transaction.types.js';
+} from './transaction.types';
+import type { CreateTransactionInput } from '../../types/transaction.types';
 
 interface DiscountResult {
   discountAmount: number;

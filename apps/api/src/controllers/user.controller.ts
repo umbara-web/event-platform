@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../utils/asyncHandler.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { ApiError } from '../utils/ApiError.js';
-import { MESSAGES } from '../constants/index.js';
-import userService from '../services/user.service.js';
+import { asyncHandler } from '../utils/asyncHandler';
+import { ApiResponse } from '../utils/ApiResponse';
+import { ApiError } from '../utils/ApiError';
+import { MESSAGES } from '../constants/index';
+import userService from '../services/user.service';
 
 export const getProfile = asyncHandler(async (req: Request, res: Response) => {
   const profile = await userService.getProfile(req.user!.id);

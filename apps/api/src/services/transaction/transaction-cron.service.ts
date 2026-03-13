@@ -1,6 +1,6 @@
-import prisma from '../../configs/database.js';
-import emailService from '../email.service.js';
-import { restoreTransaction } from './transaction-cancel.service.js';
+import prisma from '../../configs/database';
+import emailService from '../email.service';
+import { restoreTransaction } from './transaction-cancel.service';
 
 export async function expireTransactions(): Promise<number> {
   const expiredTransactions = await findExpiredTransactions();

@@ -1,17 +1,17 @@
-import { createTransaction } from './transaction-create.service.js';
+import { createTransaction } from './transaction-create.service';
 import {
   uploadPaymentProof,
   confirmTransaction,
-} from './transaction-payment.service.js';
-import { cancelTransaction } from './transaction-cancel.service.js';
+} from './transaction-payment.service';
+import { cancelTransaction } from './transaction-cancel.service';
 import {
   getTransaction,
   getTransactions,
-} from './transaction-query.service.js';
+} from './transaction-query.service';
 import {
   expireTransactions,
   autoCancelTransactions,
-} from './transaction-cron.service.js';
+} from './transaction-cron.service';
 
 class TransactionService {
   createTransaction = createTransaction;

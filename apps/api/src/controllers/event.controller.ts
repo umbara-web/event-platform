@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../utils/asyncHandler.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { MESSAGES } from '../constants/index.js';
-import eventService from '../services/event/index.js';
-import type { EventFilters } from '../types/event.types.js';
+import { asyncHandler } from '../utils/asyncHandler';
+import { ApiResponse } from '../utils/ApiResponse';
+import { MESSAGES } from '../constants/index';
+import eventService from '../services/event/index';
+import type { EventFilters } from '../types/event.types';
 
 export const createEvent = asyncHandler(async (req: Request, res: Response) => {
   const event = await eventService.createEvent(req.user!.id, req.body, req.file);

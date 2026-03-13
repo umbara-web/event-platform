@@ -1,4 +1,4 @@
-import transactionService from '../services/transaction/index.js';
+import transactionService from '../services/transaction/index';
 
 export const autoCancelTransactionsJob = async (): Promise<void> => {
   try {

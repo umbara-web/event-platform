@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../utils/asyncHandler.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { ApiError } from '../utils/ApiError.js';
-import { MESSAGES } from '../constants/index.js';
-import dashboardService from '../services/dashboard.service.js';
+import { asyncHandler } from '../utils/asyncHandler';
+import { ApiResponse } from '../utils/ApiResponse';
+import { ApiError } from '../utils/ApiError';
+import { MESSAGES } from '../constants/index';
+import dashboardService from '../services/dashboard.service';
 
 export const getSummary = asyncHandler(async (req: Request, res: Response) => {
   const summary = await dashboardService.getOrganizerSummary(req.user!.id);

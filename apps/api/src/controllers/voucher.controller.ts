@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../utils/asyncHandler.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { ApiError } from '../utils/ApiError.js';
-import { MESSAGES } from '../constants/index.js';
-import voucherService from '../services/voucher.service.js';
+import { asyncHandler } from '../utils/asyncHandler';
+import { ApiResponse } from '../utils/ApiResponse';
+import { ApiError } from '../utils/ApiError';
+import { MESSAGES } from '../constants/index';
+import voucherService from '../services/voucher.service';
 
 export const createVoucher = asyncHandler(async (req: Request, res: Response) => {
   const voucher = await voucherService.createVoucher(req.user!.id, req.body);

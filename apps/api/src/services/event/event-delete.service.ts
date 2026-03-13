@@ -1,7 +1,7 @@
-import prisma from '../../configs/database.js';
-import { ApiError } from '../../utils/ApiError.js';
-import { MESSAGES } from '../../constants/index.js';
-import cloudinaryService from '../cloudinary.service.js';
+import prisma from '../../configs/database';
+import { ApiError } from '../../utils/ApiError';
+import { MESSAGES } from '../../constants/index';
+import cloudinaryService from '../cloudinary.service';
 
 export async function deleteEvent(
   eventId: string,

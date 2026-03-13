@@ -1,5 +1,5 @@
-import { PAGINATION } from '../constants/index.js';
-import { PaginationParams, PaginatedResult } from '../types/index.js';
+import { PAGINATION } from '../constants/index';
+import { PaginationParams, PaginatedResult } from '../types/index';
 
 export interface PaginationOptions {
   page: number;

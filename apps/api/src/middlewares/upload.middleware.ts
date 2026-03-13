@@ -1,7 +1,7 @@
 import multer, { FileFilterCallback, StorageEngine } from 'multer';
 import { Request } from 'express';
-import { UPLOAD } from '../constants/index.js';
-import { ApiError } from '../utils/ApiError.js';
+import { UPLOAD } from '../constants/index';
+import { ApiError } from '../utils/ApiError';
 
 // Memory storage for Cloudinary upload
 const storage: StorageEngine = multer.memoryStorage();

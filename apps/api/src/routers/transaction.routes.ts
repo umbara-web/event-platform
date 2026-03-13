@@ -1,16 +1,16 @@
 import { Router } from 'express';
-import * as transactionController from '../controllers/transaction.controller.js';
-import { validate } from '../middlewares/validate.middleware.js';
-import { authenticate } from '../middlewares/auth.middleware.js';
-import { authorize } from '../middlewares/role.middleware.js';
-import { uploadSingle } from '../middlewares/upload.middleware.js';
+import * as transactionController from '../controllers/transaction.controller';
+import { validate } from '../middlewares/validate.middleware';
+import { authenticate } from '../middlewares/auth.middleware';
+import { authorize } from '../middlewares/role.middleware';
+import { uploadSingle } from '../middlewares/upload.middleware';
 import {
   createTransactionSchema,
   confirmTransactionSchema,
   getTransactionsQuerySchema,
   cancelTransactionSchema,
-} from '../validators/transaction.validator.js';
-import { idParamsSchema } from '../validators/common.validator.js';
+} from '../validators/transaction.validator';
+import { idParamsSchema } from '../validators/common.validator';
 
 const router = Router();
 

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../utils/asyncHandler.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { ApiError } from '../utils/ApiError.js';
-import { MESSAGES } from '../constants/index.js';
-import transactionService from '../services/transaction/index.js';
-import type { TransactionFilters } from '../types/transaction.types.js';
+import { asyncHandler } from '../utils/asyncHandler';
+import { ApiResponse } from '../utils/ApiResponse';
+import { ApiError } from '../utils/ApiError';
+import { MESSAGES } from '../constants/index';
+import transactionService from '../services/transaction/index';
+import type { TransactionFilters } from '../types/transaction.types';
 
 export const createTransaction = asyncHandler(async (req: Request, res: Response) => {
   const transaction = await transactionService.createTransaction(req.user!.id, req.body);

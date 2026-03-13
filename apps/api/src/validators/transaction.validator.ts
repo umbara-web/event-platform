@@ -6,7 +6,7 @@ import {
   nonNegativeIntSchema,
   paginationQuerySchema,
   dateSchema,
-} from './common.validator.js';
+} from './common.validator';
 
 // Transaction item schema
 const transactionItemSchema = z.object({

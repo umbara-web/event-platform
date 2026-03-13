@@ -1,8 +1,8 @@
-import prisma from '../../configs/database.js';
-import { ApiError } from '../../utils/ApiError.js';
-import { MESSAGES } from '../../constants/index.js';
+import prisma from '../../configs/database';
+import { ApiError } from '../../utils/ApiError';
+import { MESSAGES } from '../../constants/index';
 import type { Prisma } from '@prisma/client';
-import type { EventFilters } from '../../types/event.types.js';
+import type { EventFilters } from '../../types/event.types';
 
 export async function validateCategory(categoryId: string): Promise<void> {
   const category = await prisma.category.findUnique({

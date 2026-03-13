@@ -1,5 +1,5 @@
 import nodemailer, { Transporter } from 'nodemailer';
-import config from './index.js';
+import config from './index';
 
 export interface EmailOptions {
   to: string;

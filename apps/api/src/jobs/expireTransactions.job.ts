@@ -1,4 +1,4 @@
-import transactionService from '../services/transaction/index.js';
+import transactionService from '../services/transaction/index';
 
 export const expireTransactionsJob = async (): Promise<void> => {
   try {

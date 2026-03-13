@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Role } from '@prisma/client';
-import { ApiError } from '../utils/ApiError.js';
-import { MESSAGES } from '../constants/index.js';
+import { ApiError } from '../utils/ApiError';
+import { MESSAGES } from '../constants/index';
 
 /**
  * Role-based access control middleware

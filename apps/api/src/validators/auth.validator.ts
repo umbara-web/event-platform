@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Role } from '@prisma/client';
-import { emailSchema, passwordSchema, nameSchema } from './common.validator.js';
+import { emailSchema, passwordSchema, nameSchema } from './common.validator';
 
 // Register schema
 export const registerSchema = z.object({

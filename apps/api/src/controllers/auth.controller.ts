@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { asyncHandler } from '../utils/asyncHandler.js';
-import { ApiResponse } from '../utils/ApiResponse.js';
-import { MESSAGES, HTTP_STATUS } from '../constants/index.js';
-import authService from '../services/auth.service.js';
+import { asyncHandler } from '../utils/asyncHandler';
+import { ApiResponse } from '../utils/ApiResponse';
+import { MESSAGES, HTTP_STATUS } from '../constants/index';
+import authService from '../services/auth.service';
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const { user, tokens } = await authService.register(req.body);

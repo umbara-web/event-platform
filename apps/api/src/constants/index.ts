@@ -1,5 +1,5 @@
-export * from './httpStatus.js';
-export * from './messages.js';
+export * from './httpStatus';
+export * from './messages';
 
 // Transaction status constants
 export const TRANSACTION_STATUS = {

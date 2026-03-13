@@ -2,13 +2,13 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import config from './configs/index.js';
-import routes from '../src/routers/index.js';
+import config from './configs/index';
+import routes from '../src/routers/index';
 import {
   errorHandler,
   notFoundHandler,
-} from './middlewares/error.middleware.js';
-import { apiLimiter } from './middlewares/rateLimiter.middleware.js';
+} from './middlewares/error.middleware';
+import { apiLimiter } from './middlewares/rateLimiter.middleware';
 
 const app: Application = express();
 

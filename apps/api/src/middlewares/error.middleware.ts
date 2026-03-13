@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { Prisma } from '@prisma/client';
 import { ZodError } from 'zod';
 import { MulterError } from 'multer';
-import { ApiError } from '../utils/ApiError.js';
-import { HTTP_STATUS, MESSAGES } from '../constants/index.js';
-import config from '../configs/index.js';
+import { ApiError } from '../utils/ApiError';
+import { HTTP_STATUS, MESSAGES } from '../constants/index';
+import config from '../configs/index';
 
 // Convert various errors to ApiError
 const convertToApiError = (error: unknown): ApiError => {

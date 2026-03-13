@@ -1,8 +1,8 @@
 import cron from 'node-cron';
-import { expireTransactionsJob } from './expireTransactions.job.js';
-import { autoCancelTransactionsJob } from './autoCancelTransactions.job.js';
-import { expirePointsJob } from './expirePoints.job.js';
-import { expireCouponsJob } from './expireCoupons.job.js';
+import { expireTransactionsJob } from './expireTransactions.job';
+import { autoCancelTransactionsJob } from './autoCancelTransactions.job';
+import { expirePointsJob } from './expirePoints.job';
+import { expireCouponsJob } from './expireCoupons.job';
 
 export const initializeScheduler = (): void => {
   console.log('🕐 Initializing scheduled jobs...');

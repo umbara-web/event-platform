@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import * as userController from '../controllers/user.controller.js';
-import { validate } from '../middlewares/validate.middleware.js';
-import { authenticate } from '../middlewares/auth.middleware.js';
-import { uploadSingle } from '../middlewares/upload.middleware.js';
-import { updateProfileSchema } from '../validators/user.validator.js';
+import * as userController from '../controllers/user.controller';
+import { validate } from '../middlewares/validate.middleware';
+import { authenticate } from '../middlewares/auth.middleware';
+import { uploadSingle } from '../middlewares/upload.middleware';
+import { updateProfileSchema } from '../validators/user.validator';
 import {
   idParamsSchema,
   paginationQuerySchema,
-} from '../validators/common.validator.js';
+} from '../validators/common.validator';
 
 const router = Router();
 

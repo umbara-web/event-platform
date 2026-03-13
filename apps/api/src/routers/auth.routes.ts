@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import * as authController from '../controllers/auth.controller.js';
-import { validate } from '../middlewares/validate.middleware.js';
-import { authenticate } from '../middlewares/auth.middleware.js';
+import * as authController from '../controllers/auth.controller';
+import { validate } from '../middlewares/validate.middleware';
+import { authenticate } from '../middlewares/auth.middleware';
 import {
   authLimiter,
   passwordResetLimiter,
-} from '../middlewares/rateLimiter.middleware.js';
+} from '../middlewares/rateLimiter.middleware';
 import {
   registerSchema,
   loginSchema,
@@ -13,7 +13,7 @@ import {
   forgotPasswordSchema,
   resetPasswordSchema,
   changePasswordSchema,
-} from '../validators/auth.validator.js';
+} from '../validators/auth.validator';
 
 const router = Router();
 

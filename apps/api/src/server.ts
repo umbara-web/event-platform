@@ -1,8 +1,8 @@
-import app from './app.js';
-import config from './configs/index.js';
-import { connectDatabase, disconnectDatabase } from './configs/database.js';
-import { initializeScheduler } from './jobs/scheduler.js';
-import emailTransporter from './configs/email.js';
+import app from './app';
+import config from './configs/index';
+import { connectDatabase, disconnectDatabase } from './configs/database';
+import { initializeScheduler } from './jobs/scheduler';
+import emailTransporter from './configs/email';
 
 const startServer = async (): Promise<void> => {
   try {

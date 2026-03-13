@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyAccessToken } from '../utils/jwt.js';
-import { ApiError } from '../utils/ApiError.js';
-import { MESSAGES } from '../constants/index.js';
-import prisma from '../configs/database.js';
+import { verifyAccessToken } from '../utils/jwt';
+import { ApiError } from '../utils/ApiError';
+import { MESSAGES } from '../constants/index';
+import prisma from '../configs/database';
 
 /**
  * Authentication middleware

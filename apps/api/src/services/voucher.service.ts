@@ -1,10 +1,10 @@
 // src/services/voucher.service.ts
 
-import prisma from '../configs/database.js';
-import { ApiError } from '../utils/ApiError.js';
-import { MESSAGES } from '../constants/index.js';
-import { calculateDiscount, generateVoucherCode } from '../utils/helpers.js';
-import type { CreateVoucherInput } from '../types/event.types.js';
+import prisma from '../configs/database';
+import { ApiError } from '../utils/ApiError';
+import { MESSAGES } from '../constants/index';
+import { calculateDiscount, generateVoucherCode } from '../utils/helpers';
+import type { CreateVoucherInput } from '../types/event.types';
 
 export interface VoucherValidationResult {
   isValid: boolean;

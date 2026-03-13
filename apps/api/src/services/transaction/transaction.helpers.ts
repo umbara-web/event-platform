@@ -1,6 +1,6 @@
-import prisma from '../../configs/database.js';
-import { ApiError } from '../../utils/ApiError.js';
-import { MESSAGES } from '../../constants/index.js';
+import prisma from '../../configs/database';
+import { ApiError } from '../../utils/ApiError';
+import { MESSAGES } from '../../constants/index';
 import type { Event, TicketTier } from '@prisma/client';
 
 type EventWithTickets = Event & { ticketTypes: TicketTier[] };

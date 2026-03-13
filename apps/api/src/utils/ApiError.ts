@@ -1,4 +1,4 @@
-import { HTTP_STATUS, HttpStatusCode } from '../constants/index.js';
+import { HTTP_STATUS, HttpStatusCode } from '../constants/index';
 
 export class ApiError extends Error {
   public statusCode: HttpStatusCode;

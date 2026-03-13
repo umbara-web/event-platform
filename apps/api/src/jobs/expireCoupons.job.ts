@@ -1,4 +1,4 @@
-import couponService from '../services/coupon.service.js';
+import couponService from '../services/coupon.service';
 
 export const expireCouponsJob = async (): Promise<void> => {
   try {

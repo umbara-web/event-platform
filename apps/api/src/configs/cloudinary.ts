@@ -1,7 +1,7 @@
 // src/config/cloudinary.ts
 
 import { v2 as cloudinary, ConfigOptions } from 'cloudinary';
-import config from './index.js';
+import config from './index';
 
 // Configure Cloudinary
 const cloudinaryConfig: ConfigOptions = {

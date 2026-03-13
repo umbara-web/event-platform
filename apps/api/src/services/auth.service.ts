@@ -1,27 +1,27 @@
 import { Role } from '@prisma/client';
-import prisma from '../configs/database.js';
-import { ApiError } from '../utils/ApiError.js';
-import { MESSAGES } from '../constants/index.js';
-import config from '../configs/index.js';
+import prisma from '../configs/database';
+import { ApiError } from '../utils/ApiError';
+import { MESSAGES } from '../constants/index';
+import config from '../configs/index';
 import {
   generateTokenPair,
   verifyRefreshToken,
   getRefreshTokenExpiry,
-} from '../utils/jwt.js';
+} from '../utils/jwt';
 import {
   hashPassword,
   comparePassword,
   generateRandomToken,
-} from '../utils/hash.js';
-import { generateReferralCode } from '../utils/referralCode.js';
-import { addMonths, addHours } from '../utils/helpers.js';
-import emailService from './email.service.js';
+} from '../utils/hash';
+import { generateReferralCode } from '../utils/referralCode';
+import { addMonths, addHours } from '../utils/helpers';
+import emailService from './email.service';
 import type {
   RegisterInput,
   LoginInput,
   TokenPair,
   JWTPayload,
-} from '../types/index.js';
+} from '../types/index';
 
 class AuthService {
   // Register a new user

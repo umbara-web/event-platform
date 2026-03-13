@@ -1,12 +1,12 @@
-import prisma from '../../configs/database.js';
-import { ApiError } from '../../utils/ApiError.js';
-import { MESSAGES } from '../../constants/index.js';
-import config from '../../configs/index.js';
-import { addDays } from '../../utils/helpers.js';
-import cloudinaryService from '../cloudinary.service.js';
-import emailService from '../email.service.js';
-import { validateTransactionOwnership } from './transaction.helpers.js';
-import { restoreTransaction } from './transaction-cancel.service.js';
+import prisma from '../../configs/database';
+import { ApiError } from '../../utils/ApiError';
+import { MESSAGES } from '../../constants/index';
+import config from '../../configs/index';
+import { addDays } from '../../utils/helpers';
+import cloudinaryService from '../cloudinary.service';
+import emailService from '../email.service';
+import { validateTransactionOwnership } from './transaction.helpers';
+import { restoreTransaction } from './transaction-cancel.service';
 
 export async function uploadPaymentProof(
   transactionId: string,

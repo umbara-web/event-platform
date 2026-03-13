@@ -6,7 +6,7 @@ import {
   positiveIntSchema,
   nonNegativeIntSchema,
   paginationQuerySchema,
-} from './common.validator.js';
+} from './common.validator';
 
 // Ticket tier schema
 const ticketTierSchema = z.object({
