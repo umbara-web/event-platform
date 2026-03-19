@@ -6,6 +6,8 @@ Sistem ini dirancang menggunakan pola **Modular Monolith** dalam struktur **Mono
 
 ## High-Level Diagram
 
+```mermaid
+
 flowchart TD
 User["Customer"] -->|HTTPS| CDN["CDN / Edge"]
 CDN --> LB["Load Balancer / Nginx"]
@@ -31,6 +33,7 @@ CDN --> LB["Load Balancer / Nginx"]
         API --> Cloudinary["Image Storage"]
         Worker --> SMTP["Email Provider"]
     end
+```
 
 ## Core Components
 
