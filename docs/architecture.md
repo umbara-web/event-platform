@@ -6,33 +6,31 @@ Sistem ini dirancang menggunakan pola **Modular Monolith** dalam struktur **Mono
 
 ## High-Level Diagram
 
-```mermaid
-graph TD
-    User[Customer] -->|HTTPS| CDN[CDN / Edge]
-    CDN --> LB[Load Balancer / Nginx]
+flowchart TD
+User["Customer"] -->|HTTPS| CDN["CDN / Edge"]
+CDN --> LB["Load Balancer / Nginx"]
 
-    subgraph "Application Cluster"
-        LB --> CustomerWeb[Next.js App (SSR/CSR)]
-        LB --> AdminWeb[React SPA (CSR)]
+    subgraph APP["Application Cluster"]
+        LB --> CustomerWeb["Next.js App (SSR/CSR)"]
+        LB --> AdminWeb["React SPA (CSR)"]
 
-        CustomerWeb -->|REST API| API[Backend API Cluster]
+        CustomerWeb -->|REST API| API["Backend API Cluster"]
         AdminWeb -->|REST API| API
     end
 
-    subgraph "Data & Async Layer"
+    subgraph DATA["Data & Async Layer"]
         API -->|Read/Write| DB[(PostgreSQL Primary)]
-        API -->|Read| DB_Replica[(PostgreSQL Replica)]
+        API -->|Read| DBReplica[(PostgreSQL Replica)]
         API -->|Cache/Queue| Redis[(Redis Cluster)]
 
-        API -->|Produce Job| Queue[Message Queue]
-        Worker[Background Worker] -->|Consume Job| Queue
+        API -->|Produce Job| Queue["Message Queue"]
+        Worker["Background Worker"] -->|Consume Job| Queue
     end
 
-    subgraph "External Services"
-        API --> Cloudinary[Image Storage]
-        Worker --> SMTP[Email Provider]
+    subgraph EXT["External Services"]
+        API --> Cloudinary["Image Storage"]
+        Worker --> SMTP["Email Provider"]
     end
-```
 
 ## Core Components
 
