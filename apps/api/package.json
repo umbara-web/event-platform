@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "start": "npm run build && node dist/server.js",
+    "start:worker": "npm run build && node dist/worker.js",
     "dev": "nodemon",
+    "dev:worker": "nodemon src/worker.ts",
     "test": "cross-env NODE_ENV=test jest",
     "test:watch": "cross-env NODE_ENV=test jest --watch",
     "test:coverage": "cross-env NODE_ENV=test jest --coverage",
@@ -42,6 +44,8 @@
     "multer": "^2.0.2",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.11",
+    "rate-limit-redis": "^4.3.1",
+    "redis": "^5.11.0",
     "uuid": "^13.0.0",
     "zod": "^4.2.1"
   },

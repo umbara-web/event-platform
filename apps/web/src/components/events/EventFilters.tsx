@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useEffect, useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Filter, X, SlidersHorizontal } from 'lucide-react';
+import { X, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/src/components/ui/button';
 import { Label } from '@/src/components/ui/label';
 import {
@@ -105,7 +105,10 @@ export function EventFilters({
         <Select
           value={filters.categoryId || '__all__'}
           onValueChange={(value) => {
-            const nextFilters = { ...filters, categoryId: value === '__all__' ? undefined : value };
+            const nextFilters = {
+              ...filters,
+              categoryId: value === '__all__' ? undefined : value,
+            };
             onFilterChange(nextFilters);
           }}
         >
@@ -115,7 +118,10 @@ export function EventFilters({
           <SelectContent>
             <SelectItem value='__all__'>Semua Kategori</SelectItem>
             {categories.map((category, idx) => (
-              <SelectItem key={category.id || `category-${idx}`} value={category.id || `category-${idx}`}>
+              <SelectItem
+                key={category.id || `category-${idx}`}
+                value={category.id || `category-${idx}`}
+              >
                 {category.name}
               </SelectItem>
             ))}
@@ -125,7 +131,10 @@ export function EventFilters({
         <Select
           value={filters.locationId || '__all__'}
           onValueChange={(value) => {
-            const nextFilters = { ...filters, locationId: value === '__all__' ? undefined : value };
+            const nextFilters = {
+              ...filters,
+              locationId: value === '__all__' ? undefined : value,
+            };
             onFilterChange(nextFilters);
           }}
         >
@@ -135,7 +144,10 @@ export function EventFilters({
           <SelectContent>
             <SelectItem value='__all__'>Semua Lokasi</SelectItem>
             {locations.map((location, idx) => (
-              <SelectItem key={location.id || `location-${idx}`} value={location.id || `location-${idx}`}>
+              <SelectItem
+                key={location.id || `location-${idx}`}
+                value={location.id || `location-${idx}`}
+              >
                 {location.name}
               </SelectItem>
             ))}
@@ -143,10 +155,18 @@ export function EventFilters({
         </Select>
 
         <Select
-          value={filters.sortBy ? `${filters.sortBy}-${filters.sortOrder || 'asc'}` : 'startDate-asc'}
+          value={
+            filters.sortBy
+              ? `${filters.sortBy}-${filters.sortOrder || 'asc'}`
+              : 'startDate-asc'
+          }
           onValueChange={(value) => {
             const [sortBy, sortOrder] = value.split('-');
-            const nextFilters = { ...filters, sortBy, sortOrder: sortOrder as 'asc' | 'desc' };
+            const nextFilters = {
+              ...filters,
+              sortBy,
+              sortOrder: sortOrder as 'asc' | 'desc',
+            };
             onFilterChange(nextFilters);
           }}
         >
@@ -165,11 +185,14 @@ export function EventFilters({
       {/* Mobile Filter Button */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
-          <Button variant='outline' className='md:hidden h-9 px-3'>
+          <Button variant='outline' className='h-9 px-3 md:hidden'>
             <SlidersHorizontal className='mr-2 h-4 w-4' />
             Filter
             {activeFilterCount > 0 && (
-              <Badge className='ml-2 px-1 py-0 min-w-5 h-5 justify-center' variant='secondary'>
+              <Badge
+                className='ml-2 h-5 min-w-5 justify-center px-1 py-0'
+                variant='secondary'
+              >
                 {activeFilterCount}
               </Badge>
             )}
@@ -199,7 +222,10 @@ export function EventFilters({
                 <SelectContent>
                   <SelectItem value='__all__'>Semua Kategori</SelectItem>
                   {categories.map((category, idx) => (
-                    <SelectItem key={category.id || `category-${idx}`} value={category.id || `category-${idx}`}>
+                    <SelectItem
+                      key={category.id || `category-${idx}`}
+                      value={category.id || `category-${idx}`}
+                    >
                       {category.name}
                     </SelectItem>
                   ))}
@@ -226,7 +252,10 @@ export function EventFilters({
                 <SelectContent>
                   <SelectItem value='__all__'>Semua Lokasi</SelectItem>
                   {locations.map((location, idx) => (
-                    <SelectItem key={location.id || `location-${idx}`} value={location.id || `location-${idx}`}>
+                    <SelectItem
+                      key={location.id || `location-${idx}`}
+                      value={location.id || `location-${idx}`}
+                    >
                       {location.name}
                     </SelectItem>
                   ))}
@@ -254,7 +283,11 @@ export function EventFilters({
             <div className='space-y-2'>
               <Label>Urutkan</Label>
               <Select
-                value={localFilters.sortBy ? `${localFilters.sortBy}-${localFilters.sortOrder || 'asc'}` : 'startDate-asc'}
+                value={
+                  localFilters.sortBy
+                    ? `${localFilters.sortBy}-${localFilters.sortOrder || 'asc'}`
+                    : 'startDate-asc'
+                }
                 onValueChange={(value) => {
                   const [sortBy, sortOrder] = value.split('-');
                   const nextFilters = {
