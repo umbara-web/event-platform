@@ -1,6 +1,6 @@
-import emailTransporter from '../configs/email';
 import config from '../configs/index';
 import { formatRupiah } from '../utils/helpers';
+import { emailQueue } from '../queues/email.queue';
 
 interface TransactionEmailData {
   customerName: string;
@@ -27,9 +27,10 @@ class EmailService {
     html: string
   ): Promise<void> {
     try {
-      await emailTransporter.sendMail({ to, subject, html });
+      await emailQueue.add('sendEmail', { to, subject, html });
+      console.log(`📝 Email to ${to} added to queue`);
     } catch (error) {
-      console.error('Failed to send email:', error);
+      console.error('Failed to queue email:', error);
       // Don't throw error, just log it to prevent transaction failures
     }
   }

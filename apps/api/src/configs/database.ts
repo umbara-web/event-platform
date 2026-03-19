@@ -1,5 +1,3 @@
-// src/config/database.ts
-
 import { PrismaClient } from '@prisma/client';
 
 // Prevent multiple instances of Prisma Client in development
@@ -10,10 +8,7 @@ declare global {
 
 const prismaClientSingleton = (): PrismaClient => {
   return new PrismaClient({
-    log:
-      process.env.NODE_ENV === 'development'
-        ? ['query', 'info', 'warn', 'error']
-        : ['error'],
+    log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
     errorFormat: 'pretty',
   });
 };

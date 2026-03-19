@@ -3,6 +3,7 @@ import { connectDatabase, disconnectDatabase } from './configs/database';
 import { connectRedis, disconnectRedis } from './configs/redis';
 import { initializeScheduler } from './jobs/scheduler';
 import emailTransporter from './configs/email';
+import './workers/email.worker'; // Start the email queue worker
 
 const startWorker = async (): Promise<void> => {
   try {

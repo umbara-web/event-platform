@@ -1,5 +1,3 @@
-// src/config/cloudinary.ts
-
 import { v2 as cloudinary, ConfigOptions } from 'cloudinary';
 import config from './index';
 
