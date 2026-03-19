@@ -28,8 +28,8 @@ Platform manajemen acara yang memungkinkan penyelenggara acara untuk membuat dan
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd event-management-platform/apps/api
+git clone https://github.com/umbara-web/event-platform.git
+cd event-platform/apps/api
 ```
 
 ## Setup database
@@ -49,3 +49,27 @@ cd event-management-platform/apps/api
 ## Start development server
 
 - npm run dev
+
+## Start worker
+
+- npm run dev:worker
+
+## Start all
+
+- npm run dev:all
+
+## Run tests
+
+- npm run test
+
+## Run lint
+
+- npm run lint
+
+## Run build
+
+- npm run build
+
+## Run start
+
+- npm run start

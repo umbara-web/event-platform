@@ -1,5 +1,3 @@
-// src/services/event/index.ts
-
 import { createEvent } from './event-create.service';
 import { updateEvent } from './event-update.service';
 import { deleteEvent } from './event-delete.service';

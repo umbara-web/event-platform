@@ -10,7 +10,7 @@ const startServer = async (): Promise<void> => {
     await connectDatabase();
 
     // Connect to Redis Cache
-    // await connectRedis();
+    await connectRedis();
 
     // Verify email transporter
     await emailTransporter.verifyConnection();
