@@ -4,10 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import config from './configs/index';
 import routes from '../src/routers/index';
-import {
-  errorHandler,
-  notFoundHandler,
-} from './middlewares/error.middleware';
+import { errorHandler, notFoundHandler } from './middlewares/error.middleware';
 import { apiLimiter } from './middlewares/rateLimiter.middleware';
 
 const app: Application = express();
@@ -24,7 +21,7 @@ app.use(
 );
 
 // Rate limiting
-app.use(apiLimiter);
+// app.use(apiLimiter);
 
 // Body parsing
 app.use(express.json({ limit: '10mb' }));

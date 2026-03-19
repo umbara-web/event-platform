@@ -10,7 +10,7 @@ const startServer = async (): Promise<void> => {
     await connectDatabase();
 
     // Connect to Redis Cache
-    await connectRedis();
+    // await connectRedis();
 
     // Verify email transporter
     await emailTransporter.verifyConnection();
@@ -18,19 +18,18 @@ const startServer = async (): Promise<void> => {
     // Start server
     const server = app.listen(config.port, () => {
       console.log(`
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║                                                                                  ║
-║   🚀 ${config.appName}                                                          ║ ║                                                                                  ║
-║   Server is running on port ${config.port}                                       ║
-║                                                                                  ║
-║   Environment: ${config.nodeEnv}                                                 ║
-║                                                                                  ║
-║   API Version: ${config.apiVersion}                                              ║
-║                                                                                  ║
-║   API URL: <http://localhost>:${config.port}/api/${config.apiVersion}            ║
-║   Health:  <http://localhost>:${config.port}/api/${config.apiVersion}/health     ║
-║                                                                                  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+
+    🚀 ${config.appName}
+
+    Server is running on port ${config.port}
+
+    Environment: ${config.nodeEnv}
+
+    API Version: ${config.apiVersion}
+
+    API URL: <http://localhost>:${config.port}/api/${config.apiVersion}
+    Health:  <http://localhost>:${config.port}/api/${config.apiVersion}/health
+
       `);
     });
 
@@ -47,9 +46,7 @@ const startServer = async (): Promise<void> => {
 
       // Force shutdown after 10 seconds
       setTimeout(() => {
-        console.error(
-          'Could not close connections in time, forcefully shutting down'
-        );
+        console.error('Could not close connections in time, forcefully shutting down');
         process.exit(1);
       }, 10000);
     };
