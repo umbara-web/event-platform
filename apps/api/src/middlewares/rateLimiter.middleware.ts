@@ -1,9 +1,14 @@
 import rateLimit from 'express-rate-limit';
+import { RedisStore } from 'rate-limit-redis';
+import { redisClient } from '../configs/redis';
 import { HTTP_STATUS, MESSAGES } from '../constants/index';
 import config from '../configs/index';
 
 // General API rate limiter
 export const apiLimiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args: string[]) => redisClient.sendCommand(args),
+  }),
   windowMs: config.rateLimit.windowMs,
   max: config.rateLimit.maxRequests,
   message: {
@@ -17,6 +22,9 @@ export const apiLimiter = rateLimit({
 
 // Strict rate limiter for auth endpoints
 export const authLimiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args: string[]) => redisClient.sendCommand(args),
+  }),
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // 10 requests per window
   message: {
@@ -30,6 +38,9 @@ export const authLimiter = rateLimit({
 
 // Very strict limiter for password reset
 export const passwordResetLimiter = rateLimit({
+  store: new RedisStore({
+    sendCommand: (...args: string[]) => redisClient.sendCommand(args),
+  }),
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 3, // 3 requests per hour
   message: {

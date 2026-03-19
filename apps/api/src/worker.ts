@@ -1,11 +1,13 @@
-import app from './app';
 import config from './configs/index';
 import { connectDatabase, disconnectDatabase } from './configs/database';
 import { connectRedis, disconnectRedis } from './configs/redis';
+import { initializeScheduler } from './jobs/scheduler';
 import emailTransporter from './configs/email';
 
-const startServer = async (): Promise<void> => {
+const startWorker = async (): Promise<void> => {
   try {
+    console.log('Starting background worker...');
+
     // Connect to database
     await connectDatabase();
 
@@ -15,51 +17,43 @@ const startServer = async (): Promise<void> => {
     // Verify email transporter
     await emailTransporter.verifyConnection();
 
-    // Start server
-    const server = app.listen(config.port, () => {
-      console.log(`
+    // Initialize scheduled jobs
+    initializeScheduler();
+
+    console.log(`
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║                                                                                  ║
-║   🚀 ${config.appName}                                                          ║ ║                                                                                  ║
-║   Server is running on port ${config.port}                                       ║
-║                                                                                  ║
+║   🚀 ${config.appName} Background Worker                                         ║
 ║   Environment: ${config.nodeEnv}                                                 ║
-║                                                                                  ║
-║   API Version: ${config.apiVersion}                                              ║
-║                                                                                  ║
-║   API URL: <http://localhost>:${config.port}/api/${config.apiVersion}            ║
-║   Health:  <http://localhost>:${config.port}/api/${config.apiVersion}/health     ║
+║   Status: Running cron jobs & task scheduler                                     ║
 ║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
-      `);
-    });
+    `);
 
     // Graceful shutdown
     const shutdown = async (signal: string): Promise<void> => {
-      console.log(`\\n${signal} received. Shutting down gracefully...`);
-
-      server.close(async () => {
-        console.log('HTTP server closed');
-        await disconnectRedis();
-        await disconnectDatabase();
-        process.exit(0);
-      });
+      console.log(`\n${signal} received. Shutting down worker gracefully...`);
 
       // Force shutdown after 10 seconds
       setTimeout(() => {
         console.error(
-          'Could not close connections in time, forcefully shutting down'
+          'Could not close connections in time, forcefully shutting down worker'
         );
         process.exit(1);
       }, 10000);
+
+      await disconnectRedis();
+      await disconnectDatabase();
+      console.log('Database and Cache connections closed. Worker stopped.');
+      process.exit(0);
     };
 
     process.on('SIGTERM', () => shutdown('SIGTERM'));
     process.on('SIGINT', () => shutdown('SIGINT'));
   } catch (error) {
-    console.error('❌ Failed to start server:', error);
+    console.error('❌ Failed to start worker:', error);
     process.exit(1);
   }
 };
 
-startServer();
+startWorker();

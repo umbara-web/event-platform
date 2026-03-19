@@ -12,8 +12,9 @@ const envSchema = z.object({
   API_VERSION: z.string().default('v1'),
   APP_NAME: z.string().default('Event Management Platform'),
 
-  // Database
+  // Database and Cache
   DATABASE_URL: z.string().url(),
+  REDIS_URL: z.string().url().default('redis://localhost:6379'),
 
   // JWT
   JWT_ACCESS_SECRET: z.string().min(32),
@@ -70,6 +71,7 @@ const getTestDefaults = () => ({
   API_VERSION: 'v1',
   APP_NAME: 'Event Management Platform',
   DATABASE_URL: 'postgresql://test:test@localhost:5432/test_db',
+  REDIS_URL: 'redis://localhost:6379',
   JWT_ACCESS_SECRET: 'test-access-secret-key-min-32-chars!!',
   JWT_REFRESH_SECRET: 'test-refresh-secret-key-min-32-chars!!',
   JWT_ACCESS_EXPIRES_IN: '15m',
@@ -108,6 +110,7 @@ export const config = {
 
   // Database
   databaseUrl: env.DATABASE_URL,
+  redisUrl: env.REDIS_URL,
 
   // JWT
   jwt: {
