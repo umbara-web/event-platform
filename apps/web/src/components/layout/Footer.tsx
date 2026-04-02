@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { Ticket, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 import { APP_NAME, ROUTES } from '@/src/lib/constants';
+import Logo from '../logo/Logo';
 
 const footerLinks = {
   company: [
@@ -37,10 +38,7 @@ export function Footer() {
           {/* Brand */}
           <div className='lg:col-span-2'>
             <Link href={ROUTES.HOME} className='flex items-center space-x-2'>
-              <div className='bg-primary flex h-8 w-8 items-center justify-center rounded-lg'>
-                <Ticket className='text-primary-foreground h-5 w-5' />
-              </div>
-              <span className='font-bold'>{APP_NAME}</span>
+              <Logo />
             </Link>
             <p className='text-muted-foreground mt-4 max-w-xs text-sm'>
               Platform manajemen acara terdepan di Indonesia. Temukan dan buat
