@@ -1,4 +1,3 @@
-import { Role } from '@prisma/client';
 import prisma from '../configs/database';
 import { ApiError } from '../utils/ApiError';
 import { MESSAGES } from '../constants/index';
@@ -21,6 +20,8 @@ import type {
   LoginInput,
   TokenPair,
   JWTPayload,
+  SocialLoginInput,
+  SocialRegisterInput,
 } from '../types/index';
 
 class AuthService {
@@ -38,15 +39,14 @@ class AuthService {
     }
 
     // Validate referral code if provided
-    let referrer = null;
-    if (data.referralCode) {
-      referrer = await prisma.user.findUnique({
-        where: { referralCode: data.referralCode },
-      });
+    const referrer = data.referralCode
+      ? await prisma.user.findUnique({
+          where: { referralCode: data.referralCode },
+        })
+      : null;
 
-      if (!referrer) {
-        throw ApiError.badRequest(MESSAGES.AUTH.REFERRAL_NOT_FOUND);
-      }
+    if (data.referralCode && !referrer) {
+      throw ApiError.badRequest(MESSAGES.AUTH.REFERRAL_NOT_FOUND);
     }
 
     // Hash password
@@ -203,10 +203,65 @@ class AuthService {
     return { user: payload, tokens };
   }
 
+  // Social Login handler
+  async socialLogin(
+    data: SocialLoginInput
+  ): Promise<{ isNewUser: boolean; user?: JWTPayload; tokens?: TokenPair; partialUser?: SocialLoginInput }> {
+    const user = await prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (!user) {
+      // User not found, flag as new user so frontend can redirect to /complete-profile
+      return {
+        isNewUser: true,
+        partialUser: {
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+        },
+      };
+    }
+
+    // User exists, login them directly
+    const payload: JWTPayload = {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
+
+    const tokens = generateTokenPair(payload);
+
+    await prisma.refreshToken.create({
+      data: {
+        token: tokens.refreshToken,
+        userId: user.id,
+        expiresAt: getRefreshTokenExpiry(),
+      },
+    });
+
+    return { isNewUser: false, user: payload, tokens };
+  }
+
+  // Social Register handler
+  async socialRegister(
+    data: SocialRegisterInput
+  ): Promise<{ user: JWTPayload; tokens: TokenPair }> {
+    // This leverages the normal register method, but we might pass a random password
+    // since OAuth users don't need a password to login, but our DB requires it.
+    const randomPassword = generateRandomToken() + 'A1!a'; 
+    return this.register({
+      ...data,
+      password: randomPassword,
+    });
+  }
+
   // Refresh access token
   async refreshToken(refreshToken: string): Promise<TokenPair> {
     // Verify refresh token
-    const payload = verifyRefreshToken(refreshToken);
+    verifyRefreshToken(refreshToken);
 
     // Check if refresh token exists in database
     const storedToken = await prisma.refreshToken.findUnique({

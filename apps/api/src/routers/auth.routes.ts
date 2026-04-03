@@ -9,6 +9,8 @@ import {
 import {
   registerSchema,
   loginSchema,
+  socialLoginSchema,
+  socialRegisterSchema,
   refreshTokenSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
@@ -26,6 +28,20 @@ router.post(
 );
 
 router.post('/login', authLimiter, validate(loginSchema), authController.login);
+
+router.post(
+  '/social-login',
+  authLimiter,
+  validate(socialLoginSchema),
+  authController.socialLogin
+);
+
+router.post(
+  '/social-register',
+  authLimiter,
+  validate(socialRegisterSchema),
+  authController.socialRegister
+);
 
 router.post(
   '/refresh-token',
