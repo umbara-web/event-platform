@@ -138,8 +138,10 @@ export function ResetPasswordForm() {
   return (
     <Card className='w-full max-w-md'>
       <CardHeader className='space-y-1'>
-        <CardTitle className='text-2xl font-bold'>Reset Password</CardTitle>
-        <CardDescription>
+        <CardTitle className='text-center text-2xl font-bold'>
+          Reset Password
+        </CardTitle>
+        <CardDescription className='text-center'>
           Masukkan password baru untuk akun Anda
         </CardDescription>
       </CardHeader>

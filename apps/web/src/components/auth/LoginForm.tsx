@@ -19,6 +19,8 @@ import {
 } from '@/src/components/ui/card';
 import { useAuth } from '@/src/hooks/useAuth';
 import { ROUTES } from '@/src/lib/constants';
+import FormDivider from './shared/form-divider';
+import SocialLoginButtons from './shared/social-login-buttons';
 
 const loginSchema = z.object({
   email: z.string().email('Email tidak valid'),
@@ -46,8 +48,10 @@ export function LoginForm() {
   return (
     <Card className='w-full max-w-md'>
       <CardHeader className='space-y-1'>
-        <CardTitle className='text-2xl font-bold'>Masuk</CardTitle>
-        <CardDescription>
+        <CardTitle className='text-center text-2xl font-bold'>
+          Selamat Datang
+        </CardTitle>
+        <CardDescription className='text-center'>
           Masukkan email dan password untuk masuk ke akun Anda
         </CardDescription>
       </CardHeader>
@@ -90,13 +94,16 @@ export function LoginForm() {
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? (
-                  <EyeOff className='h-4 w-4' />
-                ) : (
                   <Eye className='h-4 w-4' />
+                ) : (
+                  <EyeOff className='h-4 w-4' />
                 )}
               </Button>
             </div>
           </div>
+
+          <FormDivider />
+          <SocialLoginButtons />
         </CardContent>
         <CardFooter className='flex flex-col space-y-4'>
           <Button type='submit' className='w-full' disabled={isLoginLoading}>
