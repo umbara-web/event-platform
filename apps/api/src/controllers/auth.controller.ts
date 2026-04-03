@@ -22,6 +22,34 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
+export const socialLogin = asyncHandler(async (req: Request, res: Response) => {
+  const result = await authService.socialLogin(req.body);
+  
+  if (result.isNewUser) {
+    // Send 200 OK but with the NEW_USER flag so frontend knows to redirect
+    ApiResponse.success(res, 'User not found. Please complete registration.', {
+      isNewUser: true,
+      partialUser: result.partialUser
+    });
+  } else {
+    // Successfully logged in
+    ApiResponse.success(res, MESSAGES.AUTH.LOGIN_SUCCESS, {
+      isNewUser: false,
+      user: result.user,
+      tokens: result.tokens,
+    });
+  }
+});
+
+export const socialRegister = asyncHandler(async (req: Request, res: Response) => {
+  const { user, tokens } = await authService.socialRegister(req.body);
+
+  ApiResponse.created(res, MESSAGES.AUTH.REGISTER_SUCCESS, {
+    user,
+    tokens,
+  });
+});
+
 export const refreshToken = asyncHandler(
   async (req: Request, res: Response) => {
     const { refreshToken } = req.body;
@@ -81,6 +109,8 @@ export const getMe = asyncHandler(async (req: Request, res: Response) => {
 export default {
   register,
   login,
+  socialLogin,
+  socialRegister,
   refreshToken,
   logout,
   logoutAll,

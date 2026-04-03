@@ -33,6 +33,37 @@ export const loginSchema = z.object({
     .strict(),
 });
 
+// Social Login schema
+export const socialLoginSchema = z.object({
+  body: z
+    .object({
+      email: emailSchema,
+      firstName: nameSchema,
+      lastName: nameSchema,
+    })
+    .strict(),
+});
+
+// Social Register schema
+export const socialRegisterSchema = z.object({
+  body: z
+    .object({
+      email: emailSchema,
+      firstName: nameSchema,
+      lastName: nameSchema,
+      role: z.nativeEnum(Role, {
+        message: `Role harus salah satu dari: ${Object.values(Role).join(', ')}`,
+      }),
+      referralCode: z
+        .string()
+        .trim()
+        .toUpperCase()
+        .regex(/^REF-[A-Z0-9]{8}$/, 'Format kode referral tidak valid')
+        .optional(),
+    })
+    .strict(),
+});
+
 // Refresh token schema
 export const refreshTokenSchema = z.object({
   body: z
@@ -88,6 +119,8 @@ export const changePasswordSchema = z.object({
 // Export types
 export type RegisterInput = z.infer<typeof registerSchema>['body'];
 export type LoginInput = z.infer<typeof loginSchema>['body'];
+export type SocialLoginInput = z.infer<typeof socialLoginSchema>['body'];
+export type SocialRegisterInput = z.infer<typeof socialRegisterSchema>['body'];
 export type RefreshTokenInput = z.infer<typeof refreshTokenSchema>['body'];
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>['body'];
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>['body'];

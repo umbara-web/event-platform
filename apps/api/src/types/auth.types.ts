@@ -27,6 +27,20 @@ export interface LoginInput {
   password: string;
 }
 
+export interface SocialLoginInput {
+  email: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface SocialRegisterInput {
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: Role;
+  referralCode?: string;
+}
+
 export interface ResetPasswordInput {
   token: string;
   newPassword: string;
