@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, User, UserRoundPen } from 'lucide-react';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
 import { Label } from '@/src/components/ui/label';
@@ -27,6 +27,8 @@ import {
 } from '@/src/components/ui/select';
 import { useAuth } from '@/src/hooks/useAuth';
 import { ROUTES } from '@/src/lib/constants';
+import FormDivider from './shared/form-divider';
+import SocialLoginButtons from './shared/social-login-buttons';
 
 const registerSchema = z
   .object({
@@ -95,8 +97,10 @@ export function RegisterForm() {
   return (
     <Card className='w-full max-w-md'>
       <CardHeader className='space-y-1'>
-        <CardTitle className='text-2xl font-bold'>Daftar</CardTitle>
-        <CardDescription>
+        <CardTitle className='text-center text-2xl font-bold'>
+          Daftar Akun
+        </CardTitle>
+        <CardDescription className='text-center'>
           Buat akun baru untuk mulai menggunakan platform
         </CardDescription>
       </CardHeader>
@@ -145,12 +149,22 @@ export function RegisterForm() {
                 setValue('role', value as 'CUSTOMER' | 'ORGANIZER')
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className='w-full'>
                 <SelectValue placeholder='Pilih role' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='CUSTOMER'>Peserta</SelectItem>
-                <SelectItem value='ORGANIZER'>Penyelenggara Event</SelectItem>
+                <SelectItem value='CUSTOMER'>
+                  <div className='flex items-center'>
+                    <User className='mr-2 h-4 w-4' />
+                    Peserta
+                  </div>
+                </SelectItem>
+                <SelectItem value='ORGANIZER'>
+                  <div className='flex items-center'>
+                    <UserRoundPen className='mr-2 h-4 w-4' />
+                    Penyelenggara Event
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
             {errors.role && (
@@ -226,6 +240,9 @@ export function RegisterForm() {
               </p>
             )}
           </div>
+
+          <FormDivider />
+          <SocialLoginButtons />
         </CardContent>
         <CardFooter className='flex flex-col space-y-4'>
           <Button type='submit' className='w-full' disabled={isRegisterLoading}>

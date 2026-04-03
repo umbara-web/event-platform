@@ -5,6 +5,7 @@ import './globals.css';
 
 import { QueryProvider } from '@/src/components/providers/QueryProvider';
 import { AuthProvider } from '@/src/components/providers/AuthProvider';
+import AuthSessionProvider from '@/src/components/providers/authSessionProvider';
 import { Toaster } from '@/src/components/ui/toaster';
 import { APP_NAME } from '@/src/lib/constants';
 
@@ -35,10 +36,12 @@ export default function RootLayout({
       </head>
       <body className={clsx(inter.variable, 'antialiased')}>
         <QueryProvider>
-          <AuthProvider>
-            {children}
-            <Toaster />
-          </AuthProvider>
+          <AuthSessionProvider>
+            <AuthProvider>
+              {children}
+              <Toaster />
+            </AuthProvider>
+          </AuthSessionProvider>
         </QueryProvider>
       </body>
     </html>

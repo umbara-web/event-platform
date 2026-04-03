@@ -100,8 +100,10 @@ export function ForgotPasswordForm() {
   return (
     <Card className='w-full max-w-md'>
       <CardHeader className='space-y-1'>
-        <CardTitle className='text-2xl font-bold'>Lupa Password?</CardTitle>
-        <CardDescription>
+        <CardTitle className='text-center text-2xl font-bold'>
+          Lupa Password?
+        </CardTitle>
+        <CardDescription className='text-center'>
           Masukkan email Anda dan kami akan mengirimkan link untuk reset
           password
         </CardDescription>
