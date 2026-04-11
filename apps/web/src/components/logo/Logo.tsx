@@ -17,7 +17,7 @@ export default function Logo({
 }: LogoProps) {
   return (
     <div className={`flex items-center gap-1 ${className}`}>
-      <Image src='/images/logo.png' alt='Logo' width={35} height={35} />
+      <Image src='/images/logo.png' alt='Logo' width={35} height={35} className='w-auto h-auto' />
 
       <Heading className='text-primary text-xl font-bold tracking-tight dark:text-white'>
         <ColourfulText text={APP_NAME} />
