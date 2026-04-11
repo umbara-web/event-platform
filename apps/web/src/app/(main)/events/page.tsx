@@ -108,51 +108,53 @@ export default function EventsPage() {
   }, [router]);
 
   return (
-    <div className='container mx-auto py-8'>
-      {/* Header */}
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold'>Jelajahi Event</h1>
-        <p className='text-muted-foreground'>
-          Temukan event menarik di sekitarmu
-        </p>
-      </div>
+    <main className='text-primary relative min-h-screen overflow-x-hidden bg-white antialiased dark:bg-black dark:text-white'>
+      <div className='container mx-auto mt-16 py-8'>
+        {/* Header */}
+        <div className='mb-8'>
+          <h1 className='text-3xl font-bold'>Jelajahi Event</h1>
+          <p className='text-muted-foreground'>
+            Temukan event menarik di sekitarmu
+          </p>
+        </div>
 
-      {/* Search & Filters */}
-      <div className='mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
-        <EventSearch
-          value={filters.search || ''}
-          onChange={handleSearchChange}
-        />
-        <EventFilters
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          onReset={handleReset}
-        />
-      </div>
-
-      {/* Results */}
-      <EventGrid
-        events={events}
-        isLoading={isLoading}
-        emptyMessage={
-          filters.search
-            ? `Tidak ada event ditemukan untuk "${filters.search}"`
-            : 'Tidak ada event yang tersedia'
-        }
-      />
-
-      {/* Pagination */}
-      {pagination && pagination.totalPages > 1 && (
-        <div className='mt-8'>
-          <Pagination
-            currentPage={pagination.currentPage}
-            totalPages={pagination.totalPages}
-            totalItems={pagination.totalItems}
-            itemsPerPage={pagination.itemsPerPage}
-            onPageChange={handlePageChange}
+        {/* Search & Filters */}
+        <div className='mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
+          <EventSearch
+            value={filters.search || ''}
+            onChange={handleSearchChange}
+          />
+          <EventFilters
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onReset={handleReset}
           />
         </div>
-      )}
-    </div>
+
+        {/* Results */}
+        <EventGrid
+          events={events}
+          isLoading={isLoading}
+          emptyMessage={
+            filters.search
+              ? `Tidak ada event ditemukan untuk "${filters.search}"`
+              : 'Tidak ada event yang tersedia'
+          }
+        />
+
+        {/* Pagination */}
+        {pagination && pagination.totalPages > 1 && (
+          <div className='mt-8'>
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              totalItems={pagination.totalItems}
+              itemsPerPage={pagination.itemsPerPage}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        )}
+      </div>
+    </main>
   );
 }

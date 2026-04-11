@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@plugin "tailwindcss-animate";
+@import 'tailwindcss';
+@plugin 'tailwindcss-animate';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -79,6 +79,9 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --color-400: #7738f5;
+  --color-500: #590df2;
 }
 
 .dark {
@@ -115,6 +118,13 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@theme {
+  /* Color Theme */
+  --color-primary-base: #39089b; /* Forest Green */
+  --color-primary-light: #590df2; /* Darker Green */
+  --color-accent: #d4af37; /* Gold */
+}
+
 body {
   @apply text-sm font-normal;
 
@@ -140,6 +150,39 @@ body {
 
   .flex-start {
     @apply flex items-center justify-start;
+  }
+
+  /* Marquee Animation */
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+
+  @keyframes marquee-vertical {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+
+  .animate-marquee-scrolling {
+    animation: marquee var(--duration) linear infinite;
+  }
+
+  .animate-marquee-scrolling-vertical {
+    animation: marquee-vertical var(--duration) linear infinite;
+  }
+
+  /* Robust Pause on Hover */
+  .hover-pause:hover .animate-marquee-scrolling,
+  .hover-pause:hover .animate-marquee-scrolling-vertical {
+    animation-play-state: paused;
   }
 }
 

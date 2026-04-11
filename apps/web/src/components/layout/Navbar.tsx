@@ -72,12 +72,12 @@ export function Navbar() {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <header className='sticky top-0 z-50 w-full backdrop-blur'>
+    <header className='fixed top-0 z-50 w-full'>
       <div
         className={cn(
           'container mx-auto px-2 transition-all duration-300 md:px-4 lg:px-6',
           isScrolled &&
-            'bg-background/10 mt-4 max-w-7xl rounded-2xl shadow-xl shadow-zinc-300/20 backdrop-blur-lg lg:rounded-full'
+            'bg-background/10 mt-4 max-w-7xl rounded-2xl shadow-xl shadow-zinc-300/20 backdrop-blur-sm lg:rounded-full'
         )}
       >
         <nav className='container mx-auto flex h-16 items-center justify-between'>
@@ -105,7 +105,7 @@ export function Navbar() {
           </div>
 
           {/* Right Side */}
-          <div className='flex items-center space-x-4'>
+          <div className='flex items-center space-x-4 dark:text-white'>
             {/* Search Button */}
             <Link href={ROUTES.EVENTS} className='hidden md:flex'>
               <Button variant='ghost' size='icon'>
@@ -206,7 +206,7 @@ export function Navbar() {
             ) : (
               <div className='hidden items-center space-x-2 md:flex'>
                 {/* Border Pemisah */}
-                <div className='bg-border h-6 w-px' />
+                <div className='h-6 w-px bg-gray-300' />
                 <Link href={ROUTES.LOGIN}>
                   <Button variant='ghost'>Masuk</Button>
                 </Link>
